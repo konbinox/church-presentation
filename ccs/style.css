@@ -1,73 +1,30 @@
 body {
   margin: 0;
   font-family: 'Cinzel', serif;
+  font-size: 24px; /* 强制基础字体放大 */
   background: linear-gradient(to bottom, #000000, #330066);
   color: white;
   overflow: hidden;
 }
 
-.navbar {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  background: rgba(0,0,0,0.8);
-  color: gold;
-  font-size: 2rem;
-  padding: 1rem;
-  text-align: center;
-  z-index: 1000;
-}
-
-.slide {
-  display: none;
-  padding: 10vh 10vw;
-  height: 100vh;
-  box-sizing: border-box;
-  text-align: center;
-}
-
-.slide.active {
-  display: block;
-  animation: fadeIn 0.8s ease-in;
-}
-
 h1, h2 {
-  font-size: 12rem;
+  font-size: 6rem;
   color: gold;
   text-shadow: 0 0 20px red;
   margin-bottom: 2rem;
 }
 
 p, li {
-  font-size: 9rem;
+  font-size: 4rem;
   line-height: 5rem;
   margin-bottom: 1.5rem;
 }
 
-ul {
-  list-style: none;
-  padding: 0;
-}
-
-.nav {
-  position: fixed;
-  bottom: 20px;
-  width: 100%;
-  text-align: center;
-  z-index: 1000;
-}
-
 button {
   font-size: 2rem;
-  margin: 0 20px;
   padding: 16px 32px;
   background: gold;
   border: none;
   cursor: pointer;
   border-radius: 8px;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
 }
