@@ -23,7 +23,7 @@
         /* 左侧导航 */
         .nav-sidebar {
             width: 120px;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.9);
             padding: 20px 10px;
             overflow-y: auto;
             border-right: 2px solid #ffcc00;
@@ -33,7 +33,8 @@
             width: 100px;
             height: 60px;
             margin: 8px auto;
-            background: rgba(255, 204, 0, 0.3);
+            background-size: cover;
+            background-position: center;
             border: 2px solid transparent;
             border-radius: 8px;
             cursor: pointer;
@@ -43,16 +44,35 @@
             font-size: 0.8rem;
             text-align: center;
             transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-thumbnail::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 6px;
+        }
+        
+        .nav-thumbnail span {
+            position: relative;
+            z-index: 1;
+            color: white;
+            text-shadow: 1px 1px 2px black;
         }
         
         .nav-thumbnail:hover {
-            background: rgba(255, 204, 0, 0.6);
             transform: scale(1.05);
+            border-color: #ffcc00;
         }
         
         .nav-thumbnail.active {
             border-color: #ffcc00;
-            background: rgba(255, 204, 0, 0.8);
+            box-shadow: 0 0 15px #ffcc00;
         }
         
         /* 主内容区域 */
@@ -257,8 +277,6 @@
     
     <!-- 控制面板 -->
     <div class="control-panel">
-        <button class="control-btn" onclick="prevSlide()">上一页</button>
-        <button class="control-btn" onclick="nextSlide()">下一页</button>
         <button class="control-btn" onclick="toggleConfig()">设置</button>
     </div>
     
@@ -336,6 +354,28 @@
             { id: 18, title: "下周见", type: "goodbye" }
         ];
 
+        // 背景图片映射
+        const backgroundImages = {
+            'start': '1.jpg',
+            'workers': '2.jpg', 
+            'worship': '3.jpg',
+            'worshipVideo': '4.jpg',
+            'communion': '5.jpg',
+            'teaching': '6.jpg',
+            'testimony': '7.jpg',
+            'review': '8.jpg',
+            'sharing': '9.jpg',
+            'scripture': '10.jpg',
+            'announcement': '11.jpg',
+            'birthday': '12.jpg',
+            'training': '13.jpg',
+            'prayerMeeting': '14.jpg',
+            'qrcode': '15.jpg',
+            'prayer': '16.jpg',
+            'lordPrayer': '17.jpg',
+            'goodbye': '18.jpg'
+        };
+
         // 配置数据
         let config = {
             host: "Elisa",
@@ -364,7 +404,8 @@
             activeSlides.forEach((slide, index) => {
                 const thumb = document.createElement('div');
                 thumb.className = 'nav-thumbnail';
-                thumb.textContent = `${index + 1}\n${slide.title}`;
+                thumb.style.backgroundImage = `url('./backgrounds/${backgroundImages[slide.type] || '1.jpg'}')`;
+                thumb.innerHTML = `<span>${index + 1}<br>${slide.title}</span>`;
                 thumb.onclick = () => showSlide(index);
                 sidebar.appendChild(thumb);
             });
@@ -379,6 +420,7 @@
                 const slideElement = document.createElement('div');
                 slideElement.className = 'slide';
                 slideElement.id = `slide-${slide.id}`;
+                slideElement.style.backgroundImage = `url('./backgrounds/${backgroundImages[slide.type] || '1.jpg'}')`;
                 slideElement.innerHTML = generateSlideContent(slide);
                 mainContent.appendChild(slideElement);
             });
@@ -606,20 +648,6 @@
             }
         }
 
-        // 上一页
-        function prevSlide() {
-            if (currentSlide > 0) {
-                showSlide(currentSlide - 1);
-            }
-        }
-
-        // 下一页
-        function nextSlide() {
-            if (currentSlide < activeSlides.length - 1) {
-                showSlide(currentSlide + 1);
-            }
-        }
-
         // 切换配置面板
         function toggleConfig() {
             const panel = document.getElementById('configPanel');
@@ -643,8 +671,6 @@
 
         // 键盘控制
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'ArrowLeft') prevSlide();
-            if (e.key === 'ArrowRight') nextSlide();
             if (e.key === 'Escape') {
                 document.getElementById('configPanel').style.display = 'none';
             }
