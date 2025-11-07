@@ -1,95 +1,302 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh">
 <head>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>生命河小組聚會</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Cinzel', serif;
-      background: linear-gradient(to bottom, #000000, #330066);
-      color: white;
-      overflow: hidden;
-    }
-    .slide {
-      display: none;
-      padding: 5vh 10vw;
-      height: 100vh;
-      box-sizing: border-box;
-      text-align: center;
-    }
-    .slide.active {
-      display: block;
-      animation: fadeIn 1s ease-in;
-    }
-    h1, h2 {
-      color: gold;
-      text-shadow: 0 0 20px red;
-    }
-    ul {
-      list-style: none;
-      padding: 0;
-    }
-    li {
-      font-size: 1.2rem;
-      margin: 0.5rem 0;
-      background: rgba(255,255,255,0.1);
-      padding: 0.5rem;
-      border-radius: 8px;
-    }
-    .nav {
-      position: fixed;
-      bottom: 20px;
-      width: 100%;
-      text-align: center;
-    }
-    button {
-      font-size: 2em;
-      margin: 0 10px;
-      padding: 10px 20px;
-      background: gold;
-      border: none;
-      cursor: pointer;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生命河網路牧區小組聚會</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft JhengHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: white;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .slide {
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 1s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* 炸裂字体效果 */
+        .explosive-text {
+            font-size: 4.5rem;
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 
+                0 0 10px #ff0000,
+                0 0 20px #ff5500,
+                0 0 30px #ffaa00,
+                0 0 40px #ffff00;
+            background: linear-gradient(45deg, #ff0000, #ff8800, #ffff00);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: pulse 2s infinite alternate;
+        }
+        
+        @keyframes pulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.05); }
+        }
+        
+        .large-text {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin: 20px 0;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        
+        .medium-text {
+            font-size: 2.2rem;
+            margin: 15px 0;
+            font-weight: 600;
+        }
+        
+        .normal-text {
+            font-size: 1.8rem;
+            margin: 10px 0;
+        }
+        
+        .scripture {
+            font-style: italic;
+            color: #ffcc00;
+            text-align: center;
+            margin: 25px 0;
+            font-size: 2rem;
+        }
+        
+        .highlight {
+            color: #ffcc00;
+            font-weight: bold;
+        }
+        
+        .section-title {
+            border-left: 10px solid #ffcc00;
+            padding-left: 20px;
+            margin: 30px 0 20px;
+        }
+        
+        .list-item {
+            margin: 15px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .list-item:before {
+            content: "•";
+            color: #ffcc00;
+            position: absolute;
+            left: 0;
+            font-size: 2rem;
+        }
+        
+        .time-slot {
+            background: rgba(255, 204, 0, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 5px solid #ffcc00;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .qr-code {
+            width: 200px;
+            height: 200px;
+            background: white;
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            font-weight: bold;
+            color: black;
+        }
+        
+        @media (max-width: 768px) {
+            .explosive-text {
+                font-size: 3rem;
+            }
+            
+            .large-text {
+                font-size: 2rem;
+            }
+            
+            .medium-text {
+                font-size: 1.6rem;
+            }
+            
+            .normal-text {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <!-- 标题页 -->
+        <div class="slide">
+            <h1 class="explosive-text">在 耶 穌 裡 我 們 是 一 家 人</h1>
+            <p class="large-text">生命河網路牧區小組聚會</p>
+            <p class="medium-text">主持：Elisa 姊妹</p>
+        </div>
+        
+        <!-- 注意事项 -->
+        <div class="slide">
+            <h2 class="large-text section-title">注意事項</h2>
+            <div class="list-item normal-text">請大家在名字前添加組號</div>
+            <div class="list-item normal-text">若您還沒有報名，請上網報名</div>
+            <div class="list-item normal-text">如有代禱事項或問題，請聯絡小組長</div>
+            <div class="list-item normal-text">牧師分享信息、讀經、敬拜時，請靜音</div>
+            <div class="list-item normal-text">請儘量打開視訊 (video)</div>
+        </div>
+        
+        <!-- 欢迎诗歌 -->
+        <div class="slide">
+            <h2 class="large-text section-title">我們歡迎你</h2>
+            <p class="normal-text">我們歡迎你，真歡迎你</p>
+            <p class="normal-text">在主裡誠心歡迎!</p>
+            <p class="normal-text highlight">哈利路亞!</p>
+            <p class="normal-text">我們歡迎你，真歡迎你</p>
+            <p class="normal-text">在主裡誠心歡迎!</p>
+        </div>
+        
+        <!-- 敬拜赞美 -->
+        <div class="slide">
+            <h2 class="large-text section-title">敬 拜 讚 美</h2>
+            <p class="medium-text">基督在我裏面活</p>
+            <p class="normal-text">秀玉 姊妹帶領</p>
+            <p class="medium-text">跨越的人生</p>
+            <p class="medium-text">全新的你</p>
+        </div>
+        
+        <!-- 专题 -->
+        <div class="slide">
+            <h2 class="large-text section-title">專 題</h2>
+            <p class="medium-text">聖 餐 與 短 講</p>
+            <p class="normal-text">主領：王蕭殷 牧師</p>
+        </div>
+        
+        <!-- 见证时间 -->
+        <div class="slide">
+            <h2 class="large-text section-title">大群見證故事／感恩時間</h2>
+            <p class="normal-text">(5-10分鐘，限一人一個見證，簡潔生動)</p>
+            <p class="medium-text">個人見證分享可以包括：</p>
+            <div class="list-item normal-text">聖靈的感動與引導</div>
+            <div class="list-item normal-text">靈命的成長與突破</div>
+            <div class="list-item normal-text">病得醫治／靈裡得釋放</div>
+            <div class="list-item normal-text">得勝的生活</div>
+        </div>
+        
+        <!-- 经文 -->
+        <div class="slide">
+            <p class="scripture">"你們就是基督的身子，並且各自作肢體。"</p>
+            <p class="scripture">～ 哥林多前書 12:27</p>
+        </div>
+        
+        <!-- 查经 -->
+        <div class="slide">
+            <h2 class="large-text section-title">我們是基督的身體</h2>
+            <p class="medium-text">哥林多前書 12:12-30</p>
+            
+            <h3 class="medium-text">一、一個身體有許多肢體（林前 12:12-20）</h3>
+            <div class="list-item normal-text">A. 我們都是基督的肢體（12-13）</div>
+            <div class="list-item normal-text">B. 所有肢體都需要彼此（14-17）</div>
+            <div class="list-item normal-text">C. 神隨己意安排各肢體（18-20）</div>
+            
+            <h3 class="medium-text">二、 肢體應彼此相顧（林前 12：21-26)</h3>
+            <div class="list-item normal-text">A. 要幫助軟弱和不俊美的肢體（21-23）</div>
+            <div class="list-item normal-text">B. 肢體是彼此關聯的（24-26）</div>
+            
+            <h3 class="medium-text">三、心建造基督身體（林前 12:27-30）</h3>
+            <div class="list-item normal-text">A. 我們各人都是基督身體的一部分（27）</div>
+            <div class="list-item normal-text">B. 教會中的肢體（28-30）</div>
+        </div>
+        
+        <!-- 查经要点 -->
+        <div class="slide">
+            <h2 class="large-text section-title">查 經 要 點</h2>
+            <div class="list-item normal-text">神造我們的時候，為何給我們的身體有這麼多的肢體（body part）？</div>
+            <div class="list-item normal-text">保羅為什麼以身體和肢體的連接來形容基督的教會呢？這跟我們有何關係呢？</div>
+            <div class="list-item normal-text">保羅所講的軟弱、不體面、不俊美的肢體是指哪些弟兄姊妹？我們如何幫補他們？？</div>
+            <div class="list-item normal-text">試舉我們教會中有哪些不同的職分和恩賜，他們是如何彼此搭配、同心建立神榮耀的教會？</div>
+            <div class="list-item normal-text">請在小組中為有需要幫補的弟兄姊妹禱告，並商討如何具體的幫助他們。</div>
+        </div>
+        
+        <!-- 课程信息 -->
+        <div class="slide">
+            <h2 class="large-text section-title">課程信息</h2>
+            <p class="normal-text">10 月 1 日開始第四季課程，報名請上網 <span class="highlight">ROLPLI.net</span> 或洽 <span class="highlight">ROLCC Social</span></p>
+            <p class="medium-text">美洲網絡 A 牧區「週末聖靈烈火敬拜／醫治禱告」訓練，將持續進行中</p>
+            
+            <h3 class="medium-text">週六場</h3>
+            <div class="time-slot">
+                <p class="normal-text">美西 (早晨)：7:00 AM - 9:00 AM</p>
+                <p class="normal-text">美東 (早晨)：10:00 AM - 12:00 PM</p>
+                <p class="normal-text">北京/台北 (晚上)：10:00 PM - 00:00 AM</p>
+            </div>
+            
+            <h3 class="medium-text">週日場</h3>
+            <div class="time-slot">
+                <p class="normal-text">北京/台北 (晚上)：8:00 PM - 10:00 PM</p>
+                <p class="normal-text">美西 (早晨)：5:00 AM - 7:00 AM</p>
+                <p class="normal-text">美東 (早晨)：8:00 AM - 10:00 AM</p>
+            </div>
+        </div>
+        
+        <!-- 结尾 -->
+        <div class="slide">
+            <h2 class="large-text section-title">請 掃 碼 關 注</h2>
+            <div class="qr-code">QR CODE</div>
+            <h2 class="large-text">下 周 見</h2>
+        </div>
+    </div>
 
-  <div class="slide active">
-    <h1>🔥 在基督裡，我們是一個榮耀的家 🔥</h1>
-    <p>主持：Elisa 姊妹<br>生命河網路牧區小組聚會<br>2025年11月8日</p>
-  </div>
-
-  <div class="slide">
-    <h2>📌 聚會指南</h2>
-    <ul>
-      <li>請在名字前加上組號</li>
-      <li>帶來報名者請報組名</li>
-      <li>有代禱事項請移給小組長</li>
-      <li>信息、敬拜時請靜音</li>
-      <li>請盡量開啟視訊</li>
-    </ul>
-  </div>
-
-  <div class="slide">
-    <h2>🎉 歡迎進入神的同在</h2>
-    <p>我們歡迎你，真歡迎你<br>在主裡誠心歡迎！<br>哈利路亞！</p>
-  </div>
-
-  <div class="slide">
-    <h2>🎶 敬拜讚美</h2>
-    <p>詩歌：基督在我裡面活<br>敬拜領唱：秀玉 姊妹<br>讓我們用心靈與誠實敬拜祂！</p>
-  </div>
-
-  <div class="slide">
-    <h2>💥 信息主題</h2>
-    <p>跨越的人生 · 全新的你<br>講員：劉彤牧師<br>「若有人在基督裡，他就是新造的人」～哥林多後書 5:17</p>
-  </div>
-
-  <div class="slide">
+    <script>
+        // 添加简单的滚动动画效果
+        document.addEventListener('DOMContentLoaded', function() {
+            const slides = document.querySelectorAll('.slide');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animation = 'fadeIn 1s ease forwards';
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            slides.forEach(slide => {
+                observer.observe(slide);
+            });
+        });
+    </script>
+</body>
+</html>
