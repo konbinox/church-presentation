@@ -3,11 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>生命河網路牧區<!DOCTYPE html>
-<html lang="zh">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>生命河網路牧區小組聚會</title>
     <style>
         * {
@@ -20,22 +15,75 @@
             font-family: 'Microsoft JhengHei', Arial, sans-serif;
             background: #000;
             color: white;
-            line-height: 1.6;
-            overflow-x: hidden;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        /* 左侧导航 */
+        .nav-sidebar {
+            width: 120px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px 10px;
+            overflow-y: auto;
+            border-right: 2px solid #ffcc00;
+        }
+        
+        .nav-thumbnail {
+            width: 100px;
+            height: 60px;
+            margin: 8px auto;
+            background: rgba(255, 204, 0, 0.3);
+            border: 2px solid transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-thumbnail:hover {
+            background: rgba(255, 204, 0, 0.6);
+            transform: scale(1.05);
+        }
+        
+        .nav-thumbnail.active {
+            border-color: #ffcc00;
+            background: rgba(255, 204, 0, 0.8);
+        }
+        
+        /* 主内容区域 */
+        .main-content {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
         }
         
         .slide {
-            min-height: 100vh;
-            padding: 60px 40px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 40px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
-            position: relative;
             background-size: cover;
             background-position: center;
-            background-repeat: no-repeat;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 1;
+        }
+        
+        .slide.active {
+            opacity: 1;
+            z-index: 2;
         }
         
         .slide::before {
@@ -46,58 +94,46 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.6);
-            z-index: 1;
+            z-index: -1;
         }
         
         .slide-content {
-            position: relative;
-            z-index: 2;
-            max-width: 1200px;
+            max-width: 1000px;
             width: 100%;
+            position: relative;
+            z-index: 1;
         }
         
-        /* 炸裂字体效果 */
+        /* 字体样式 */
         .explosive-text {
-            font-size: 6rem;
+            font-size: 5rem;
             font-weight: 900;
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             text-shadow: 
                 0 0 10px #ff0000,
                 0 0 20px #ff5500,
-                0 0 30px #ffaa00,
-                0 0 40px #ffff00;
+                0 0 30px #ffaa00;
             background: linear-gradient(45deg, #ff0000, #ff8800, #ffff00);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            animation: pulse 2s infinite alternate;
-        }
-        
-        @keyframes pulse {
-            from { transform: scale(1); }
-            to { transform: scale(1.05); }
         }
         
         .large-text {
-            font-size: 4rem;
+            font-size: 3.5rem;
             font-weight: 700;
-            margin: 25px 0;
+            margin: 20px 0;
             text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
         }
         
         .medium-text {
-            font-size: 3rem;
-            margin: 20px 0;
+            font-size: 2.5rem;
+            margin: 15px 0;
             font-weight: 600;
         }
         
         .normal-text {
-            font-size: 2.5rem;
-            margin: 15px 0;
-        }
-        
-        .small-text {
             font-size: 2rem;
             margin: 10px 0;
         }
@@ -106,8 +142,8 @@
             font-style: italic;
             color: #ffcc00;
             text-align: center;
-            margin: 30px 0;
-            font-size: 2.8rem;
+            margin: 20px 0;
+            font-size: 2.2rem;
         }
         
         .highlight {
@@ -115,16 +151,36 @@
             font-weight: bold;
         }
         
-        .section-title {
-            border-left: 15px solid #ffcc00;
-            padding-left: 25px;
-            margin: 40px 0 25px;
-            text-align: left;
+        /* 控制面板 */
+        .control-panel {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #ffcc00;
         }
         
+        .control-btn {
+            background: rgba(255, 204, 0, 0.8);
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        /* 列表样式 */
         .list-item {
-            margin: 20px 0;
-            padding-left: 30px;
+            margin: 15px 0;
+            padding-left: 25px;
             position: relative;
             text-align: left;
         }
@@ -134,990 +190,328 @@
             color: #ffcc00;
             position: absolute;
             left: 0;
-            font-size: 3rem;
-        }
-        
-        .time-slot {
-            background: rgba(255, 204, 0, 0.2);
-            padding: 20px;
-            border-radius: 15px;
-            margin: 15px 0;
-            border-left: 8px solid #ffcc00;
-        }
-        
-        .video-link {
-            display: inline-block;
-            background: rgba(255, 204, 0, 0.9);
-            color: #000;
-            padding: 15px 30px;
-            margin: 15px 10px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-size: 2.2rem;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-        }
-        
-        .video-link:hover {
-            background: rgba(255, 255, 255, 0.95);
-            transform: translateY(-3px);
-        }
-        
-        .qr-code {
-            width: 250px;
-            height: 250px;
-            background: white;
-            margin: 30px auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 15px;
-            font-weight: bold;
-            color: black;
-            font-size: 1.8rem;
-        }
-        
-        /* 导航按钮 */
-        .nav-buttons {
-            position: fixed;
-            bottom: 30px;
-            left: 0;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            z-index: 100;
-        }
-        
-        .nav-btn {
-            background: rgba(255, 204, 0, 0.8);
-            color: #000;
-            border: none;
-            padding: 15px 30px;
-            margin: 0 15px;
-            border-radius: 50px;
-            font-size: 1.8rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-        }
-        
-        .nav-btn:hover {
-            background: rgba(255, 255, 255, 0.9);
-            transform: translateY(-3px);
-        }
-        
-        /* 页面指示器 */
-        .page-indicator {
-            position: fixed;
-            top: 30px;
-            right: 30px;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 30px;
-            font-size: 1.8rem;
-            z-index: 100;
-        }
-        
-        /* 背景图片样式 */
-        .background-image {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            object-fit: cover;
-        }
-        
-        @media (max-width: 768px) {
-            .explosive-text {
-                font-size: 4rem;
-            }
-            
-            .large-text {
-                font-size: 3rem;
-            }
-            
-            .medium-text {
-                font-size: 2.2rem;
-            }
-            
-            .normal-text {
-                font-size: 1.8rem;
-            }
-            
-            .small-text {
-                font-size: 1.6rem;
-            }
-            
-            .nav-btn {
-                padding: 12px 20px;
-                font-size: 1.5rem;
-            }
-            
-            .video-link {
-                padding: 12px 20px;
-                font-size: 1.8rem;
-            }
-        }
-    </style>
-</head>
-<body>
-    <!-- 页面指示器 -->
-    <div class="page-indicator">页面 <span id="current-page">1</span> / <span id="total-pages">12</span></div>
-    
-    <!-- 标题页 -->
-    <div class="slide" id="slide1">
-        <img src="./backgrounds/1.jpg" alt="背景1" class="background-image" onerror="handleImageError(this, 1)">
-        <div class="slide-content">
-            <h1 class="explosive-text">在 耶 穌 裡 我 們 是 一 家 人</h1>
-            <p class="large-text">生命河網路牧區小組聚會</p>
-            <p class="medium-text">主持：Elisa 姊妹</p>
-        </div>
-    </div>
-    
-    <!-- 敬拜赞美 -->
-    <div class="slide" id="slide2">
-        <img src="./backgrounds/2.jpg" alt="背景2" class="background-image" onerror="handleImageError(this, 2)">
-        <div class="slide-content">
-            <h2 class="large-text section-title">敬 拜 讚 美</h2>
-            <p class="medium-text">基督在我裏面活</p>
-            <p class="normal-text">秀玉 姊妹帶領</p>
-            <p class="medium-text">跨越的人生</p>
-            <p class="medium-text">全新的你</p>
-        </div>
-    </div>
-    
-    <!-- 刘彤牧师信息 -->
-    <div class="slide" id="slide3">
-        <img src="./backgrounds/3.jpg" alt="背景3" class="background-image" onerror="handleImageError(this, 3)">
-        <div class="slide-content">
-            <h2 class="large-text section-title">劉彤牧師信息</h2>
-            <p class="medium-text">跨越的人生</p>
-            <p class="medium-text">全新的你</p>
-            <div style="margin: 30px 0;">
-                <a href="#" class="video-link">观看视频链接 1</a>
-                <a href="#" class="video-link">观看视频链接 2</a>
-            </div>
-        </div>
-    </div>
-    
-    <!-- 注意事项 -->
-    <div class="slide" id="slide4">
-        <img src="./backgrounds/4.jpg" alt="背景4" class="background-image" onerror="handleImageError(this, 4)">
-        <div class="slide-content">
-            <h2 class="large-text section-title">注意事項</h2>
-            <div class="list-item normal-text">請大家在名字前添加組號</div>
-            <div class="list-item normal-text">若您還沒有報名，請上網報名</div>
-            <div class="list-item normal-text">如有代禱事項或問題，請聯絡小組長</div>
-            <div class="list-item normal-text">牧師分享信息、讀經、敬拜時，請靜音</div>
-            <div class="list-item normal-text">請儘量打開視訊 (video)</div>
-        </div>
-    </div>
-    
-    <!-- 欢迎诗歌 -->
-    <div class="slide" id="slide5">
-        <img src="./backgrounds/5.jpg" alt="背景5" class="background-image" onerror="handleImageError(this, 5)">
-        <div class="slide-content">
-            <h2 class="large-text section-title">我們歡迎你</h2>
-            <p class="normal-text">我們歡迎你，真歡迎你</p>
-            <p class="normal-text">在主裡誠心歡迎!</p>
-            <p class="normal-text highlight">哈利路亞!</p>
-            <p class="normal-text">我們歡迎你，真歡迎你</p>
-            <p class="normal-text">在主裡誠心歡迎!</p>
-        </div>
-    </div>
-    
-    <!-- 专题 -->
-    <div class="slide" id="slide6">
-        <img src="./backgrounds/6.jpg" alt="背景6" class="background-image" onerror="handleImageError(this, 6)">
-        <div class="slide-content">
-            <h2 class="large-text section-title">專 題</h2>
-            <p class="medium-text">聖 餐 與 短 講</p>
-            <p class="normal-text">主領：王蕭殷 牧師</p>
-        </div>
-    </div>
-    
-    <!-- 见证时间 -->
-    <div class="slide" id="slide7">
-        <img src="./backgrounds/7.jpg" alt="背景7" class="background-image" onerror="handleImageError(this, 7)">
-        <div class="slide-content">
-            <h2 class="large-text section-title">大群見證故事／感恩時間</h2>
-            <p class="normal-text">(5-10分鐘，限一人一個見證，簡潔生動)</p>
-            <p class="medium-text">個人見證分享可以包括：</p>
-            <div class="list-item normal-text">聖靈的感動與引導</div>
-            <div class="list-item normal-text">靈命的成長與突破</div>
-            <div class="list-item normal-text">病得醫治／靈裡得釋放</div>
-            <div class="list-item normal-text">得勝的生活</div>
-        </div>
-    </div>
-    
-    <!-- 经文 -->
-    <div class="slide" id="slide8">
-        <img src="./backgrounds/8.jpg" alt="背景8" class="background-image" onerror="handleImageError(this, 8)">
-        <div class="slide-content">
-            <p class="scripture">"你們就是基督的身子，並且各自作肢體。"</p>
-            <p class="scripture">～ 哥林多前書 12:27</p>
-        </div>
-    </div>
-    
-    <!-- 查经 -->
-    <div class="slide" id="slide9">
-        <img src="./backgrounds/9.jpg" alt="背景9" class="background-image" onerror="handleImageError(this, 9)">
-        <div class="slide-content">
-            <h2 class="large-text section-title">我們是基督的身體</h2>
-            <p class="medium-text">哥林多前書 12:12-30</p>
-            
-            <h3 class="medium-text">一、一個身體有許多肢體（林前 12:12-20）</h3>
-            <div class="list-item normal-text">A. 我們都是基督的肢體（12-13）</div>
-            <div class="list-item normal-text">B. 所有肢體都需要彼此（14-17）</div>
-            <div class="list-item normal-text">C. 神隨己意安排各肢體（18-20）</div>
-            
-            <h3 class="medium-text">二、 肢體應彼此相顧（林前 12：21-26)</h3>
-            <div class="list-item normal-text">A. 要幫助軟弱和不俊美的肢體（21-23）</div>
-            <div class="list-item normal-text">B. 肢體是彼此關聯的（24-26）</div>
-            
-            <h3 class="medium-text">三、心建造基督身體（林前 12:27-30）</h3>
-            <div class="list-item normal-text">A. 我們各人都是基督身體的一部分（27）</div>
-            <div class="list-item normal-text">B. 教會中的肢體（28-30）</div>
-        </div>
-    </div>
-    
-    <!-- 查经要点 -->
-    <div class="slide" id="slide10">
-        <img src="./backgrounds/10.jpg" alt="背景10" class="background-image" onerror="handleImageError(this, 10)">
-        <div class="slide-content">
-            <h2 class="large-text section-title">查 經 要 點</h2>
-            <div class="list-item normal-text">神造我們的時候，為何給我們的身體有這麼多的肢體（body part）？</div>
-            <div class="list-item normal-text">保羅為什麼以身體和肢體的連接來形容基督的教會呢？這跟我們有何關係呢？</div>
-            <div class="list-item normal-text">保羅所講的軟弱、不體面、不俊美的肢體是指哪些弟兄姊妹？我們如何幫補他們？？</div>
-            <div class="list-item normal-text">試舉我們教會中有哪些不同的職分和恩賜，他們是如何彼此搭配、同心建立神榮耀的教會？</div>
-            <div class="list-item normal-text">請在小組中為有需要幫補的弟兄姊妹禱告，並商討如何具體的幫助他們。</div>
-        </div>
-    </div>
-    
-    <!-- 课程信息 -->
-    <div class="slide" id="slide11">
-        <img src="./backgrounds/11.jpg" alt="背景11" class="background-image" onerror="handleImageError(this, 11)">
-        <div class="slide-content">
-            <h2 class="large-text section-title">課程信息</h2>
-            <p class="normal-text">10 月 1 日開始第四季課程，報名請上網 <span class="highlight">ROLPLI.net</span> 或洽 <span class="highlight">ROLCC Social</span></p>
-            <p class="medium-text">美洲網絡 A 牧區「週末聖靈烈火敬拜／醫治禱告」訓練，將持續進行中</p>
-            
-            <h3 class="medium-text">週六場</h3>
-            <div class="time-slot">
-                <p class="normal-text">美西 (早晨)：7:00 AM - 9:00 AM</p>
-                <p class="normal-text">美東 (早晨)：10:00 AM - 12:00 PM</p>
-                <p class="normal-text">北京/台北 (晚上)：10:00 PM - 00:00 AM</p>
-            </div>
-            
-            <h3 class="medium-text">週日場</h3>
-            <div class="time-slot">
-                <p class="normal-text">北京/台北 (晚上)：8:00 PM - 10:00 PM</p>
-                <p class="normal-text">美西 (早晨)：5:00 AM - 7:00 AM</p>
-                <p class="normal-text">美東 (早晨)：8:00 AM - 10:00 AM</p>
-            </div>
-        </div>
-    </div>
-    
-    <!-- 结尾 -->
-    <div class="slide" id="slide12">
-        <img src="./backgrounds/12.jpg" alt="背景12" class="background-image" onerror="handleImageError(this, 12)">
-        <div class="slide-content">
-            <h2 class="large-text section-title">請 掃 碼 關 注</h2>
-            <div class="qr-code">QR CODE</div>
-            <h2 class="large-text">下 周 見</h2>
-        </div>
-    </div>
-    
-    <!-- 导航按钮 -->
-    <div class="nav-buttons">
-        <button class="nav-btn" id="prev-btn">上一页</button>
-        <button class="nav-btn" id="next-btn">下一页</button>
-    </div>
-
-    <script>
-        // 图片错误处理函数
-        function handleImageError(imgElement, slideNumber) {
-            console.log(`图片 ${slideNumber}.jpg 加载失败，尝试使用备用图片`);
-            imgElement.style.display = 'none';
-            
-            // 尝试使用其他图片作为备用
-            const totalImages = 23; // 您上传的图片总数
-            let attempt = 1;
-            
-            function tryNextImage() {
-                if (attempt <= 3) { // 最多尝试3次
-                    const nextImageNumber = (slideNumber + attempt - 1) % totalImages + 1;
-                    const nextImage = new Image();
-                    nextImage.src = `./backgrounds/${nextImageNumber}.jpg`;
-                    nextImage.className = 'background-image';
-                    nextImage.alt = `备用背景${nextImageNumber}`;
-                    nextImage.onload = function() {
-                        imgElement.parentNode.insertBefore(nextImage, imgElement);
-                        imgElement.remove();
-                    };
-                    nextImage.onerror = function() {
-                        attempt++;
-                        tryNextImage();
-                    };
-                } else {
-                    // 所有尝试都失败，使用渐变背景
-                    setGradientBackground(imgElement.parentNode, slideNumber);
-                }
-            }
-            
-            tryNextImage();
-        }
-        
-        // 设置渐变背景
-        function setGradientBackground(slideElement, slideNumber) {
-            const gradients = [
-                'linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d)',
-                'linear-gradient(135deg, #3a7bd5, #00d2ff)',
-                'linear-gradient(135deg, #667eea, #764ba2)',
-                'linear-gradient(135deg, #f093fb, #f5576c)',
-                'linear-gradient(135deg, #4facfe, #00f2fe)',
-                'linear-gradient(135deg, #43e97b, #38f9d7)',
-                'linear-gradient(135deg, #fa709a, #fee140)',
-                'linear-gradient(135deg, #30cfd0, #330867)',
-                'linear-gradient(135deg, #a8edea, #fed6e3)',
-                'linear-gradient(135deg, #5ee7df, #b490ca)',
-                'linear-gradient(135deg, #d299c2, #fef9d7)',
-                'linear-gradient(135deg, #ff6b6b, #ffd93d)'
-            ];
-            
-            const gradientIndex = (slideNumber - 1) % gradients.length;
-            slideElement.style.background = gradients[gradientIndex];
-        }
-        
-        // 预加载所有图片
-        function preloadAllImages() {
-            const totalImages = 23;
-            for (let i = 1; i <= totalImages; i++) {
-                const img = new Image();
-                img.src = `./backgrounds/${i}.jpg`;
-            }
-        }
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            const slides = document.querySelectorAll('.slide');
-            const totalSlides = slides.length;
-            let currentSlide = 0;
-            
-            // 预加载所有图片
-            preloadAllImages();
-            
-            // 更新页面指示器
-            document.getElementById('total-pages').textContent = totalSlides;
-            updatePageIndicator();
-            
-            // 显示当前幻灯片
-            function showSlide(index) {
-                // 隐藏所有幻灯片
-                slides.forEach(slide => {
-                    slide.style.display = 'none';
-                });
-                
-                // 显示当前幻灯片
-                slides[index].style.display = 'flex';
-                
-                // 更新当前页面指示器
-                updatePageIndicator();
-            }
-            
-            // 更新页面指示器
-            function updatePageIndicator() {
-                document.getElementById('current-page').textContent = currentSlide + 1;
-            }
-            
-            // 下一张幻灯片
-            function nextSlide() {
-                currentSlide = (currentSlide + 1) % totalSlides;
-                showSlide(currentSlide);
-            }
-            
-            // 上一张幻灯片
-            function prevSlide() {
-                currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-                showSlide(currentSlide);
-            }
-            
-            // 添加按钮事件监听器
-            document.getElementById('next-btn').addEventListener('click', nextSlide);
-            document.getElementById('prev-btn').addEventListener('click', prevSlide);
-            
-            // 添加键盘事件监听器
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'ArrowRight') {
-                    nextSlide();
-                } else if (e.key === 'ArrowLeft') {
-                    prevSlide();
-                }
-            });
-            
-            // 初始化显示第一张幻灯片
-            showSlide(currentSlide);
-        });
-    </script>
-</body>
-</html>小組聚會</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Microsoft JhengHei', Arial, sans-serif;
-            background: #000;
-            color: white;
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-        
-        .slide {
-            min-height: 100vh;
-            padding: 60px 40px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            position: relative;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-        }
-        
-        .slide::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            z-index: 1;
-        }
-        
-        .slide-content {
-            position: relative;
-            z-index: 2;
-            max-width: 1200px;
-            width: 100%;
-        }
-        
-        /* 炸裂字体效果 */
-        .explosive-text {
-            font-size: 6rem;
-            font-weight: 900;
-            text-align: center;
-            margin-bottom: 40px;
-            text-shadow: 
-                0 0 10px #ff0000,
-                0 0 20px #ff5500,
-                0 0 30px #ffaa00,
-                0 0 40px #ffff00;
-            background: linear-gradient(45deg, #ff0000, #ff8800, #ffff00);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation: pulse 2s infinite alternate;
-        }
-        
-        @keyframes pulse {
-            from { transform: scale(1); }
-            to { transform: scale(1.05); }
-        }
-        
-        .large-text {
-            font-size: 4rem;
-            font-weight: 700;
-            margin: 25px 0;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-        }
-        
-        .medium-text {
-            font-size: 3rem;
-            margin: 20px 0;
-            font-weight: 600;
-        }
-        
-        .normal-text {
-            font-size: 2.5rem;
-            margin: 15px 0;
-        }
-        
-        .small-text {
             font-size: 2rem;
-            margin: 10px 0;
-        }
-        
-        .scripture {
-            font-style: italic;
-            color: #ffcc00;
-            text-align: center;
-            margin: 30px 0;
-            font-size: 2.8rem;
-        }
-        
-        .highlight {
-            color: #ffcc00;
-            font-weight: bold;
-        }
-        
-        .section-title {
-            border-left: 15px solid #ffcc00;
-            padding-left: 25px;
-            margin: 40px 0 25px;
-            text-align: left;
-        }
-        
-        .list-item {
-            margin: 20px 0;
-            padding-left: 30px;
-            position: relative;
-            text-align: left;
-        }
-        
-        .list-item:before {
-            content: "•";
-            color: #ffcc00;
-            position: absolute;
-            left: 0;
-            font-size: 3rem;
         }
         
         .time-slot {
             background: rgba(255, 204, 0, 0.2);
-            padding: 20px;
-            border-radius: 15px;
-            margin: 15px 0;
-            border-left: 8px solid #ffcc00;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 5px solid #ffcc00;
         }
         
-        .video-link {
-            display: inline-block;
-            background: rgba(255, 204, 0, 0.9);
-            color: #000;
-            padding: 15px 30px;
-            margin: 15px 10px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-size: 2.2rem;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        /* 选择器样式 */
+        .selector {
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
         }
         
-        .video-link:hover {
-            background: rgba(255, 255, 255, 0.95);
-            transform: translateY(-3px);
-        }
-        
-        .qr-code {
-            width: 250px;
-            height: 250px;
-            background: white;
-            margin: 30px auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 15px;
-            font-weight: bold;
-            color: black;
-            font-size: 1.8rem;
-        }
-        
-        /* 导航按钮 */
-        .nav-buttons {
-            position: fixed;
-            bottom: 30px;
-            left: 0;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            z-index: 100;
-        }
-        
-        .nav-btn {
-            background: rgba(255, 204, 0, 0.8);
-            color: #000;
-            border: none;
-            padding: 15px 30px;
-            margin: 0 15px;
-            border-radius: 50px;
-            font-size: 1.8rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-        }
-        
-        .nav-btn:hover {
+        select, input {
+            font-size: 1.2rem;
+            padding: 5px;
+            margin: 5px;
             background: rgba(255, 255, 255, 0.9);
-            transform: translateY(-3px);
-        }
-        
-        /* 页面指示器 */
-        .page-indicator {
-            position: fixed;
-            top: 30px;
-            right: 30px;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 30px;
-            font-size: 1.8rem;
-            z-index: 100;
-        }
-        
-        /* 背景图片样式 */
-        .background-image {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            object-fit: cover;
-        }
-        
-        @media (max-width: 768px) {
-            .explosive-text {
-                font-size: 4rem;
-            }
-            
-            .large-text {
-                font-size: 3rem;
-            }
-            
-            .medium-text {
-                font-size: 2.2rem;
-            }
-            
-            .normal-text {
-                font-size: 1.8rem;
-            }
-            
-            .small-text {
-                font-size: 1.6rem;
-            }
-            
-            .nav-btn {
-                padding: 12px 20px;
-                font-size: 1.5rem;
-            }
-            
-            .video-link {
-                padding: 12px 20px;
-                font-size: 1.8rem;
-            }
+            border: 1px solid #ffcc00;
+            border-radius: 3px;
         }
     </style>
 </head>
 <body>
-    <!-- 页面指示器 -->
-    <div class="page-indicator">页面 <span id="current-page">1</span> / <span id="total-pages">12</span></div>
-    
-    <!-- 标题页 -->
-    <div class="slide" id="slide1">
-        <img src="./backgrounds/1.jpg" alt="背景1" class="background-image" onerror="handleImageError(this, 1)">
-        <div class="slide-content">
-            <h1 class="explosive-text">在 耶 穌 裡 我 們 是 一 家 人</h1>
-            <p class="large-text">生命河網路牧區小組聚會</p>
-            <p class="medium-text">主持：Elisa 姊妹</p>
-        </div>
+    <!-- 左侧导航 -->
+    <div class="nav-sidebar" id="navSidebar">
+        <!-- 导航缩略图将通过JavaScript动态生成 -->
     </div>
     
-    <!-- 敬拜赞美 -->
-    <div class="slide" id="slide2">
-        <img src="./backgrounds/2.jpg" alt="背景2" class="background-image" onerror="handleImageError(this, 2)">
-        <div class="slide-content">
-            <h2 class="large-text section-title">敬 拜 讚 美</h2>
-            <p class="medium-text">基督在我裏面活</p>
-            <p class="normal-text">秀玉 姊妹帶領</p>
-            <p class="medium-text">跨越的人生</p>
-            <p class="medium-text">全新的你</p>
-        </div>
+    <!-- 主内容区域 -->
+    <div class="main-content">
+        <!-- 所有幻灯片将通过JavaScript动态生成 -->
     </div>
     
-    <!-- 刘彤牧师信息 -->
-    <div class="slide" id="slide3">
-        <img src="./backgrounds/3.jpg" alt="背景3" class="background-image" onerror="handleImageError(this, 3)">
-        <div class="slide-content">
-            <h2 class="large-text section-title">劉彤牧師信息</h2>
-            <p class="medium-text">跨越的人生</p>
-            <p class="medium-text">全新的你</p>
-            <div style="margin: 30px 0;">
-                <a href="#" class="video-link">观看视频链接 1</a>
-                <a href="#" class="video-link">观看视频链接 2</a>
-            </div>
-        </div>
+    <!-- 控制面板 -->
+    <div class="control-panel">
+        <button class="control-btn" onclick="prevSlide()">上一页</button>
+        <button class="control-btn" onclick="nextSlide()">下一页</button>
+        <button class="control-btn" onclick="toggleConfig()">设置</button>
     </div>
     
-    <!-- 注意事项 -->
-    <div class="slide" id="slide4">
-        <img src="./backgrounds/4.jpg" alt="背景4" class="background-image" onerror="handleImageError(this, 4)">
-        <div class="slide-content">
-            <h2 class="large-text section-title">注意事項</h2>
-            <div class="list-item normal-text">請大家在名字前添加組號</div>
-            <div class="list-item normal-text">若您還沒有報名，請上網報名</div>
-            <div class="list-item normal-text">如有代禱事項或問題，請聯絡小組長</div>
-            <div class="list-item normal-text">牧師分享信息、讀經、敬拜時，請靜音</div>
-            <div class="list-item normal-text">請儘量打開視訊 (video)</div>
+    <!-- 配置面板 -->
+    <div id="configPanel" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.9); padding: 30px; border-radius: 15px; border: 2px solid #ffcc00; z-index: 1000; width: 80%; max-width: 600px;">
+        <h2 style="color: #ffcc00; margin-bottom: 20px;">本周聚会设置</h2>
+        
+        <div class="selector">
+            <label style="color: white;">主持人:</label>
+            <select id="hostSelect">
+                <option value="Elisa">Elisa 姊妹</option>
+                <option value="王大明">王大明 弟兄</option>
+                <option value="李小華">李小華 姊妹</option>
+                <option value="陳小美">陳小美 姊妹</option>
+                <option value="張大衛">張大衛 弟兄</option>
+            </select>
         </div>
-    </div>
-    
-    <!-- 欢迎诗歌 -->
-    <div class="slide" id="slide5">
-        <img src="./backgrounds/5.jpg" alt="背景5" class="background-image" onerror="handleImageError(this, 5)">
-        <div class="slide-content">
-            <h2 class="large-text section-title">我們歡迎你</h2>
-            <p class="normal-text">我們歡迎你，真歡迎你</p>
-            <p class="normal-text">在主裡誠心歡迎!</p>
-            <p class="normal-text highlight">哈利路亞!</p>
-            <p class="normal-text">我們歡迎你，真歡迎你</p>
-            <p class="normal-text">在主裡誠心歡迎!</p>
+        
+        <div class="selector">
+            <label style="color: white;">敬拜歌曲:</label>
+            <select id="worshipSelect">
+                <option value="基督在我裏面活">基督在我裏面活</option>
+                <option value="全新的你">全新的你</option>
+                <option value="跨越的人生">跨越的人生</option>
+                <option value="聖靈請你來">聖靈請你來</option>
+                <option value="更深之處">更深之處</option>
+            </select>
         </div>
-    </div>
-    
-    <!-- 专题 -->
-    <div class="slide" id="slide6">
-        <img src="./backgrounds/6.jpg" alt="背景6" class="background-image" onerror="handleImageError(this, 6)">
-        <div class="slide-content">
-            <h2 class="large-text section-title">專 題</h2>
-            <p class="medium-text">聖 餐 與 短 講</p>
-            <p class="normal-text">主領：王蕭殷 牧師</p>
+        
+        <div class="selector">
+            <label style="color: white;">劉彤短講:</label>
+            <select id="teachingSelect">
+                <option value="1">跨越的人生 第1讲</option>
+                <option value="2">跨越的人生 第2讲</option>
+                <option value="3">跨越的人生 第3讲</option>
+                <!-- 可以继续添加到137个 -->
+            </select>
         </div>
-    </div>
-    
-    <!-- 见证时间 -->
-    <div class="slide" id="slide7">
-        <img src="./backgrounds/7.jpg" alt="背景7" class="background-image" onerror="handleImageError(this, 7)">
-        <div class="slide-content">
-            <h2 class="large-text section-title">大群見證故事／感恩時間</h2>
-            <p class="normal-text">(5-10分鐘，限一人一個見證，簡潔生動)</p>
-            <p class="medium-text">個人見證分享可以包括：</p>
-            <div class="list-item normal-text">聖靈的感動與引導</div>
-            <div class="list-item normal-text">靈命的成長與突破</div>
-            <div class="list-item normal-text">病得醫治／靈裡得釋放</div>
-            <div class="list-item normal-text">得勝的生活</div>
+        
+        <div class="selector">
+            <label style="color: white;"><input type="checkbox" id="communionCheck"> 本月第一周（有圣餐）</label>
         </div>
-    </div>
-    
-    <!-- 经文 -->
-    <div class="slide" id="slide8">
-        <img src="./backgrounds/8.jpg" alt="背景8" class="background-image" onerror="handleImageError(this, 8)">
-        <div class="slide-content">
-            <p class="scripture">"你們就是基督的身子，並且各自作肢體。"</p>
-            <p class="scripture">～ 哥林多前書 12:27</p>
+        
+        <div class="selector">
+            <label style="color: white;"><input type="checkbox" id="birthdayCheck"> 本月第一周（有生日庆生）</label>
         </div>
-    </div>
-    
-    <!-- 查经 -->
-    <div class="slide" id="slide9">
-        <img src="./backgrounds/9.jpg" alt="背景9" class="background-image" onerror="handleImageError(this, 9)">
-        <div class="slide-content">
-            <h2 class="large-text section-title">我們是基督的身體</h2>
-            <p class="medium-text">哥林多前書 12:12-30</p>
-            
-            <h3 class="medium-text">一、一個身體有許多肢體（林前 12:12-20）</h3>
-            <div class="list-item normal-text">A. 我們都是基督的肢體（12-13）</div>
-            <div class="list-item normal-text">B. 所有肢體都需要彼此（14-17）</div>
-            <div class="list-item normal-text">C. 神隨己意安排各肢體（18-20）</div>
-            
-            <h3 class="medium-text">二、 肢體應彼此相顧（林前 12：21-26)</h3>
-            <div class="list-item normal-text">A. 要幫助軟弱和不俊美的肢體（21-23）</div>
-            <div class="list-item normal-text">B. 肢體是彼此關聯的（24-26）</div>
-            
-            <h3 class="medium-text">三、心建造基督身體（林前 12:27-30）</h3>
-            <div class="list-item normal-text">A. 我們各人都是基督身體的一部分（27）</div>
-            <div class="list-item normal-text">B. 教會中的肢體（28-30）</div>
+        
+        <div style="text-align: center; margin-top: 20px;">
+            <button class="control-btn" onclick="applyConfig()">应用设置</button>
+            <button class="control-btn" onclick="toggleConfig()">关闭</button>
         </div>
-    </div>
-    
-    <!-- 查经要点 -->
-    <div class="slide" id="slide10">
-        <img src="./backgrounds/10.jpg" alt="背景10" class="background-image" onerror="handleImageError(this, 10)">
-        <div class="slide-content">
-            <h2 class="large-text section-title">查 經 要 點</h2>
-            <div class="list-item normal-text">神造我們的時候，為何給我們的身體有這麼多的肢體（body part）？</div>
-            <div class="list-item normal-text">保羅為什麼以身體和肢體的連接來形容基督的教會呢？這跟我們有何關係呢？</div>
-            <div class="list-item normal-text">保羅所講的軟弱、不體面、不俊美的肢體是指哪些弟兄姊妹？我們如何幫補他們？？</div>
-            <div class="list-item normal-text">試舉我們教會中有哪些不同的職分和恩賜，他們是如何彼此搭配、同心建立神榮耀的教會？</div>
-            <div class="list-item normal-text">請在小組中為有需要幫補的弟兄姊妹禱告，並商討如何具體的幫助他們。</div>
-        </div>
-    </div>
-    
-    <!-- 课程信息 -->
-    <div class="slide" id="slide11">
-        <img src="./backgrounds/11.jpg" alt="背景11" class="background-image" onerror="handleImageError(this, 11)">
-        <div class="slide-content">
-            <h2 class="large-text section-title">課程信息</h2>
-            <p class="normal-text">10 月 1 日開始第四季課程，報名請上網 <span class="highlight">ROLPLI.net</span> 或洽 <span class="highlight">ROLCC Social</span></p>
-            <p class="medium-text">美洲網絡 A 牧區「週末聖靈烈火敬拜／醫治禱告」訓練，將持續進行中</p>
-            
-            <h3 class="medium-text">週六場</h3>
-            <div class="time-slot">
-                <p class="normal-text">美西 (早晨)：7:00 AM - 9:00 AM</p>
-                <p class="normal-text">美東 (早晨)：10:00 AM - 12:00 PM</p>
-                <p class="normal-text">北京/台北 (晚上)：10:00 PM - 00:00 AM</p>
-            </div>
-            
-            <h3 class="medium-text">週日場</h3>
-            <div class="time-slot">
-                <p class="normal-text">北京/台北 (晚上)：8:00 PM - 10:00 PM</p>
-                <p class="normal-text">美西 (早晨)：5:00 AM - 7:00 AM</p>
-                <p class="normal-text">美東 (早晨)：8:00 AM - 10:00 AM</p>
-            </div>
-        </div>
-    </div>
-    
-    <!-- 结尾 -->
-    <div class="slide" id="slide12">
-        <img src="./backgrounds/12.jpg" alt="背景12" class="background-image" onerror="handleImageError(this, 12)">
-        <div class="slide-content">
-            <h2 class="large-text section-title">請 掃 碼 關 注</h2>
-            <div class="qr-code">QR CODE</div>
-            <h2 class="large-text">下 周 見</h2>
-        </div>
-    </div>
-    
-    <!-- 导航按钮 -->
-    <div class="nav-buttons">
-        <button class="nav-btn" id="prev-btn">上一页</button>
-        <button class="nav-btn" id="next-btn">下一页</button>
     </div>
 
     <script>
-        // 图片错误处理函数
-        function handleImageError(imgElement, slideNumber) {
-            console.log(`图片 ${slideNumber}.jpg 加载失败，尝试使用备用图片`);
-            imgElement.style.display = 'none';
+        // 幻灯片数据
+        const slidesData = [
+            { id: 1, title: "起始页面", type: "start" },
+            { id: 2, title: "同工列表", type: "workers" },
+            { id: 3, title: "敬拜页面", type: "worship" },
+            { id: 4, title: "敬拜歌曲", type: "worshipVideo" },
+            { id: 5, title: "圣餐", type: "communion", conditional: true },
+            { id: 6, title: "劉彤短講", type: "teaching" },
+            { id: 7, title: "大群见证", type: "testimony" },
+            { id: 8, title: "主日回顾", type: "review" },
+            { id: 9, title: "话语分享", type: "sharing" },
+            { id: 10, title: "本周经文", type: "scripture" },
+            { id: 11, title: "家事报告", type: "announcement" },
+            { id: 12, title: "生日庆生", type: "birthday", conditional: true },
+            { id: 13, title: "领袖学院", type: "training" },
+            { id: 14, title: "烈火祷告", type: "prayerMeeting" },
+            { id: 15, title: "二维码", type: "qrcode" },
+            { id: 16, title: "代祷事项", type: "prayer" },
+            { id: 17, title: "主祷文", type: "lordPrayer" },
+            { id: 18, title: "下周见", type: "goodbye" }
+        ];
+
+        // 配置数据
+        let config = {
+            host: "Elisa",
+            worshipSong: "基督在我裏面活",
+            teaching: "1",
+            isFirstWeek: false,
+            hasBirthday: false
+        };
+
+        let currentSlide = 0;
+        let activeSlides = [];
+
+        // 初始化
+        function init() {
+            generateNavigation();
+            generateSlides();
+            updateActiveSlides();
+            showSlide(0);
+        }
+
+        // 生成导航
+        function generateNavigation() {
+            const sidebar = document.getElementById('navSidebar');
+            sidebar.innerHTML = '';
             
-            // 尝试使用其他图片作为备用
-            const totalImages = 23; // 您上传的图片总数
-            let attempt = 1;
+            activeSlides.forEach((slide, index) => {
+                const thumb = document.createElement('div');
+                thumb.className = 'nav-thumbnail';
+                thumb.textContent = `${index + 1}\n${slide.title}`;
+                thumb.onclick = () => showSlide(index);
+                sidebar.appendChild(thumb);
+            });
+        }
+
+        // 生成所有幻灯片
+        function generateSlides() {
+            const mainContent = document.querySelector('.main-content');
+            mainContent.innerHTML = '';
             
-            function tryNextImage() {
-                if (attempt <= 3) { // 最多尝试3次
-                    const nextImageNumber = (slideNumber + attempt - 1) % totalImages + 1;
-                    const nextImage = new Image();
-                    nextImage.src = `./backgrounds/${nextImageNumber}.jpg`;
-                    nextImage.className = 'background-image';
-                    nextImage.alt = `备用背景${nextImageNumber}`;
-                    nextImage.onload = function() {
-                        imgElement.parentNode.insertBefore(nextImage, imgElement);
-                        imgElement.remove();
-                    };
-                    nextImage.onerror = function() {
-                        attempt++;
-                        tryNextImage();
-                    };
-                } else {
-                    // 所有尝试都失败，使用渐变背景
-                    setGradientBackground(imgElement.parentNode, slideNumber);
+            slidesData.forEach(slide => {
+                const slideElement = document.createElement('div');
+                slideElement.className = 'slide';
+                slideElement.id = `slide-${slide.id}`;
+                slideElement.innerHTML = generateSlideContent(slide);
+                mainContent.appendChild(slideElement);
+            });
+        }
+
+        // 生成幻灯片内容
+        function generateSlideContent(slide) {
+            switch(slide.type) {
+                case 'start':
+                    return `
+                        <div class="slide-content">
+                            <h1 class="explosive-text">在 耶 穌 裡 我 們 是 一 家 人</h1>
+                            <p class="large-text">生命河網路牧區小組聚會</p>
+                            <p class="medium-text" id="hostName">主持：${config.host}</p>
+                        </div>
+                    `;
+                case 'workers':
+                    return `
+                        <div class="slide-content">
+                            <h2 class="large-text">本週服事同工</h2>
+                            <div class="list-item normal-text">主持人：${config.host}</div>
+                            <div class="list-item normal-text">敬拜帶領：秀玉 姊妹</div>
+                            <div class="list-item normal-text">話語分享：輪值同工</div>
+                            <div class="list-item normal-text">技術支援：技術團隊</div>
+                        </div>
+                    `;
+                case 'worship':
+                    return `
+                        <div class="slide-content">
+                            <h2 class="large-text">敬 拜 讚 美</h2>
+                            <p class="medium-text">${config.worshipSong}</p>
+                            <p class="normal-text">秀玉 姊妹帶領</p>
+                        </div>
+                    `;
+                case 'worshipVideo':
+                    return `
+                        <div class="slide-content">
+                            <h2 class="large-text">敬拜歌曲视频</h2>
+                            <p class="medium-text">${config.worshipSong}</p>
+                            <div style="margin: 20px; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 10px;">
+                                <p class="normal-text">🎵 视频播放区域 🎵</p>
+                            </div>
+                        </div>
+                    `;
+                case 'communion':
+                    return `
+                        <div class="slide-content">
+                            <h2 class="large-text">聖 餐 禮</h2>
+                            <p class="medium-text">主領：王蕭殷 牧師</p>
+                            <p class="scripture">"這是我為你們捨的身體..."</p>
+                        </div>
+                    `;
+                case 'teaching':
+                    return `
+                        <div class="slide-content">
+                            <h2 class="large-text">劉彤牧師短講</h2>
+                            <p class="medium-text">跨越的人生 第${config.teaching}講</p>
+                            <div style="margin: 20px; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 10px;">
+                                <p class="normal-text">📺 短講视频播放 📺</p>
+                            </div>
+                        </div>
+                    `;
+                case 'testimony':
+                    return `
+                        <div class="slide-content">
+                            <h2 class="large-text">大群見證故事</h2>
+                            <p class="normal-text">(5-10分鐘，限一人一個見證，簡潔生動)</p>
+                            <div class="list-item normal-text">聖靈的感動與引導</div>
+                            <div class="list-item normal-text">靈命的成長與突破</div>
+                            <div class="list-item normal-text">病得醫治／靈裡得釋放</div>
+                            <div class="list-item normal-text">得勝的生活</div>
+                        </div>
+                    `;
+                // 其他幻灯片类型...
+                default:
+                    return `
+                        <div class="slide-content">
+                            <h2 class="large-text">${slide.title}</h2>
+                            <p class="normal-text">内容加载中...</p>
+                        </div>
+                    `;
+            }
+        }
+
+        // 更新活动幻灯片列表
+        function updateActiveSlides() {
+            activeSlides = slidesData.filter(slide => {
+                if (slide.conditional) {
+                    if (slide.type === 'communion') return config.isFirstWeek;
+                    if (slide.type === 'birthday') return config.hasBirthday;
                 }
-            }
-            
-            tryNextImage();
+                return true;
+            });
         }
-        
-        // 设置渐变背景
-        function setGradientBackground(slideElement, slideNumber) {
-            const gradients = [
-                'linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d)',
-                'linear-gradient(135deg, #3a7bd5, #00d2ff)',
-                'linear-gradient(135deg, #667eea, #764ba2)',
-                'linear-gradient(135deg, #f093fb, #f5576c)',
-                'linear-gradient(135deg, #4facfe, #00f2fe)',
-                'linear-gradient(135deg, #43e97b, #38f9d7)',
-                'linear-gradient(135deg, #fa709a, #fee140)',
-                'linear-gradient(135deg, #30cfd0, #330867)',
-                'linear-gradient(135deg, #a8edea, #fed6e3)',
-                'linear-gradient(135deg, #5ee7df, #b490ca)',
-                'linear-gradient(135deg, #d299c2, #fef9d7)',
-                'linear-gradient(135deg, #ff6b6b, #ffd93d)'
-            ];
-            
-            const gradientIndex = (slideNumber - 1) % gradients.length;
-            slideElement.style.background = gradients[gradientIndex];
-        }
-        
-        // 预加载所有图片
-        function preloadAllImages() {
-            const totalImages = 23;
-            for (let i = 1; i <= totalImages; i++) {
-                const img = new Image();
-                img.src = `./backgrounds/${i}.jpg`;
-            }
-        }
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            const slides = document.querySelectorAll('.slide');
-            const totalSlides = slides.length;
-            let currentSlide = 0;
-            
-            // 预加载所有图片
-            preloadAllImages();
-            
-            // 更新页面指示器
-            document.getElementById('total-pages').textContent = totalSlides;
-            updatePageIndicator();
-            
-            // 显示当前幻灯片
-            function showSlide(index) {
-                // 隐藏所有幻灯片
-                slides.forEach(slide => {
-                    slide.style.display = 'none';
-                });
-                
-                // 显示当前幻灯片
-                slides[index].style.display = 'flex';
-                
-                // 更新当前页面指示器
-                updatePageIndicator();
-            }
-            
-            // 更新页面指示器
-            function updatePageIndicator() {
-                document.getElementById('current-page').textContent = currentSlide + 1;
-            }
-            
-            // 下一张幻灯片
-            function nextSlide() {
-                currentSlide = (currentSlide + 1) % totalSlides;
-                showSlide(currentSlide);
-            }
-            
-            // 上一张幻灯片
-            function prevSlide() {
-                currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-                showSlide(currentSlide);
-            }
-            
-            // 添加按钮事件监听器
-            document.getElementById('next-btn').addEventListener('click', nextSlide);
-            document.getElementById('prev-btn').addEventListener('click', prevSlide);
-            
-            // 添加键盘事件监听器
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'ArrowRight') {
-                    nextSlide();
-                } else if (e.key === 'ArrowLeft') {
-                    prevSlide();
-                }
+
+        // 显示指定幻灯片
+        function showSlide(index) {
+            // 隐藏所有幻灯片
+            document.querySelectorAll('.slide').forEach(slide => {
+                slide.classList.remove('active');
             });
             
-            // 初始化显示第一张幻灯片
-            showSlide(currentSlide);
+            // 更新导航激活状态
+            document.querySelectorAll('.nav-thumbnail').forEach((thumb, i) => {
+                thumb.classList.toggle('active', i === index);
+            });
+            
+            // 显示当前幻灯片
+            const targetSlide = activeSlides[index];
+            if (targetSlide) {
+                document.getElementById(`slide-${targetSlide.id}`).classList.add('active');
+                currentSlide = index;
+            }
+        }
+
+        // 上一页
+        function prevSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+            }
+        }
+
+        // 下一页
+        function nextSlide() {
+            if (currentSlide < activeSlides.length - 1) {
+                showSlide(currentSlide + 1);
+            }
+        }
+
+        // 切换配置面板
+        function toggleConfig() {
+            const panel = document.getElementById('configPanel');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // 应用配置
+        function applyConfig() {
+            config.host = document.getElementById('hostSelect').value;
+            config.worshipSong = document.getElementById('worshipSelect').value;
+            config.teaching = document.getElementById('teachingSelect').value;
+            config.isFirstWeek = document.getElementById('communionCheck').checked;
+            config.hasBirthday = document.getElementById('birthdayCheck').checked;
+            
+            updateActiveSlides();
+            generateNavigation();
+            generateSlides();
+            showSlide(0);
+            toggleConfig();
+        }
+
+        // 键盘控制
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'Escape') document.getElementById('configPanel').style.display = 'none';
         });
+
+        // 初始化
+        window.onload = init;
     </script>
 </body>
 </html>
