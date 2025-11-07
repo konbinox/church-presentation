@@ -41,10 +41,11 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             text-align: center;
             transition: all 0.3s ease;
             position: relative;
+            overflow: hidden;
         }
         
         .nav-thumbnail::before {
@@ -54,7 +55,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.6);
             border-radius: 6px;
         }
         
@@ -63,6 +64,8 @@
             z-index: 1;
             color: white;
             text-shadow: 1px 1px 2px black;
+            font-weight: bold;
+            padding: 2px;
         }
         
         .nav-thumbnail:hover {
@@ -89,21 +92,25 @@
             width: 100%;
             height: 100%;
             padding: 40px;
-            display: flex;
+            display: none;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
             background-size: cover;
             background-position: center;
-            opacity: 0;
-            transition: opacity 0.5s ease;
+            background-repeat: no-repeat;
             z-index: 1;
         }
         
         .slide.active {
-            opacity: 1;
-            z-index: 2;
+            display: flex;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         
         .slide::before {
@@ -180,6 +187,7 @@
             padding: 15px;
             border-radius: 10px;
             border: 1px solid #ffcc00;
+            z-index: 100;
         }
         
         .control-btn {
@@ -191,6 +199,7 @@
             border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
+            font-size: 1.2rem;
         }
         
         .control-btn:hover {
@@ -221,23 +230,6 @@
             border-left: 5px solid #ffcc00;
         }
         
-        /* 选择器样式 */
-        .selector {
-            margin: 10px 0;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
-        }
-        
-        select, input {
-            font-size: 1.2rem;
-            padding: 5px;
-            margin: 5px;
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid #ffcc00;
-            border-radius: 3px;
-        }
-        
         /* 配置面板 */
         .config-panel {
             display: none;
@@ -255,12 +247,50 @@
             color: white;
         }
         
+        .config-panel h2 {
+            color: #ffcc00;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .selector {
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+        
+        .selector label {
+            color: white;
+            font-size: 1.3rem;
+            margin-right: 10px;
+        }
+        
+        select, input[type="checkbox"] {
+            font-size: 1.2rem;
+            padding: 8px;
+            margin: 5px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid #ffcc00;
+            border-radius: 5px;
+        }
+        
+        input[type="checkbox"] {
+            transform: scale(1.3);
+            margin-right: 10px;
+        }
+        
         .video-placeholder {
             margin: 20px;
             padding: 40px;
             background: rgba(255,255,255,0.1);
             border-radius: 10px;
             border: 2px dashed #ffcc00;
+        }
+        
+        .config-buttons {
+            text-align: center;
+            margin-top: 25px;
         }
     </style>
 </head>
@@ -282,10 +312,10 @@
     
     <!-- 配置面板 -->
     <div class="config-panel" id="configPanel">
-        <h2 style="color: #ffcc00; margin-bottom: 20px; text-align: center;">本周聚会设置</h2>
+        <h2>本周聚会设置</h2>
         
         <div class="selector">
-            <label style="color: white;">主持人:</label>
+            <label>主持人:</label>
             <select id="hostSelect">
                 <option value="Elisa">Elisa 姊妹</option>
                 <option value="王大明">王大明 弟兄</option>
@@ -296,7 +326,7 @@
         </div>
         
         <div class="selector">
-            <label style="color: white;">敬拜歌曲:</label>
+            <label>敬拜歌曲:</label>
             <select id="worshipSelect">
                 <option value="基督在我裏面活">基督在我裏面活</option>
                 <option value="全新的你">全新的你</option>
@@ -307,7 +337,7 @@
         </div>
         
         <div class="selector">
-            <label style="color: white;">劉彤短講:</label>
+            <label>劉彤短講:</label>
             <select id="teachingSelect">
                 <option value="1">跨越的人生 第1讲</option>
                 <option value="2">跨越的人生 第2讲</option>
@@ -318,14 +348,14 @@
         </div>
         
         <div class="selector">
-            <label style="color: white;"><input type="checkbox" id="communionCheck"> 本月第一周（有圣餐）</label>
+            <label><input type="checkbox" id="communionCheck"> 本月第一周（有圣餐）</label>
         </div>
         
         <div class="selector">
-            <label style="color: white;"><input type="checkbox" id="birthdayCheck"> 本月第一周（有生日庆生）</label>
+            <label><input type="checkbox" id="birthdayCheck"> 本月第一周（有生日庆生）</label>
         </div>
         
-        <div style="text-align: center; margin-top: 20px;">
+        <div class="config-buttons">
             <button class="control-btn" onclick="applyConfig()">应用设置</button>
             <button class="control-btn" onclick="toggleConfig()">关闭</button>
         </div>
@@ -354,26 +384,26 @@
             { id: 18, title: "下周见", type: "goodbye" }
         ];
 
-        // 背景图片映射
+        // 背景图片映射 - 修正为 slide1.jpg 到 slide23.jpg
         const backgroundImages = {
-            'start': '1.jpg',
-            'workers': '2.jpg', 
-            'worship': '3.jpg',
-            'worshipVideo': '4.jpg',
-            'communion': '5.jpg',
-            'teaching': '6.jpg',
-            'testimony': '7.jpg',
-            'review': '8.jpg',
-            'sharing': '9.jpg',
-            'scripture': '10.jpg',
-            'announcement': '11.jpg',
-            'birthday': '12.jpg',
-            'training': '13.jpg',
-            'prayerMeeting': '14.jpg',
-            'qrcode': '15.jpg',
-            'prayer': '16.jpg',
-            'lordPrayer': '17.jpg',
-            'goodbye': '18.jpg'
+            'start': 'slide1.jpg',
+            'workers': 'slide2.jpg', 
+            'worship': 'slide3.jpg',
+            'worshipVideo': 'slide4.jpg',
+            'communion': 'slide5.jpg',
+            'teaching': 'slide6.jpg',
+            'testimony': 'slide7.jpg',
+            'review': 'slide8.jpg',
+            'sharing': 'slide9.jpg',
+            'scripture': 'slide10.jpg',
+            'announcement': 'slide11.jpg',
+            'birthday': 'slide12.jpg',
+            'training': 'slide13.jpg',
+            'prayerMeeting': 'slide14.jpg',
+            'qrcode': 'slide15.jpg',
+            'prayer': 'slide16.jpg',
+            'lordPrayer': 'slide17.jpg',
+            'goodbye': 'slide18.jpg'
         };
 
         // 配置数据
@@ -390,10 +420,12 @@
 
         // 初始化
         function init() {
+            console.log("初始化开始...");
             updateActiveSlides();
             generateNavigation();
             generateSlides();
             showSlide(0);
+            console.log("初始化完成");
         }
 
         // 生成导航
@@ -401,12 +433,19 @@
             const sidebar = document.getElementById('navSidebar');
             sidebar.innerHTML = '';
             
+            console.log("生成导航，活动幻灯片数量:", activeSlides.length);
+            
             activeSlides.forEach((slide, index) => {
                 const thumb = document.createElement('div');
                 thumb.className = 'nav-thumbnail';
-                thumb.style.backgroundImage = `url('./backgrounds/${backgroundImages[slide.type] || '1.jpg'}')`;
+                const imageUrl = `./backgrounds/${backgroundImages[slide.type] || 'slide1.jpg'}`;
+                console.log(`设置导航图片: ${imageUrl}`);
+                thumb.style.backgroundImage = `url('${imageUrl}')`;
                 thumb.innerHTML = `<span>${index + 1}<br>${slide.title}</span>`;
-                thumb.onclick = () => showSlide(index);
+                thumb.onclick = () => {
+                    console.log(`点击导航: ${index} - ${slide.title}`);
+                    showSlide(index);
+                };
                 sidebar.appendChild(thumb);
             });
         }
@@ -416,11 +455,18 @@
             const mainContent = document.getElementById('mainContent');
             mainContent.innerHTML = '';
             
+            console.log("生成幻灯片...");
+            
             slidesData.forEach(slide => {
                 const slideElement = document.createElement('div');
                 slideElement.className = 'slide';
                 slideElement.id = `slide-${slide.id}`;
-                slideElement.style.backgroundImage = `url('./backgrounds/${backgroundImages[slide.type] || '1.jpg'}')`;
+                
+                // 设置背景图片 - 修正为 slide1.jpg 格式
+                const imageUrl = `./backgrounds/${backgroundImages[slide.type] || 'slide1.jpg'}`;
+                console.log(`设置幻灯片 ${slide.id} 背景: ${imageUrl}`);
+                slideElement.style.backgroundImage = `url('${imageUrl}')`;
+                
                 slideElement.innerHTML = generateSlideContent(slide);
                 mainContent.appendChild(slideElement);
             });
@@ -621,11 +667,17 @@
                 }
                 return true;
             });
+            console.log("更新活动幻灯片:", activeSlides.length);
         }
 
         // 显示指定幻灯片
         function showSlide(index) {
-            if (index < 0 || index >= activeSlides.length) return;
+            if (index < 0 || index >= activeSlides.length) {
+                console.log("无效的幻灯片索引:", index);
+                return;
+            }
+            
+            console.log(`显示幻灯片: ${index}`);
             
             // 隐藏所有幻灯片
             document.querySelectorAll('.slide').forEach(slide => {
@@ -644,6 +696,9 @@
                 if (slideElement) {
                     slideElement.classList.add('active');
                     currentSlide = index;
+                    console.log(`成功显示幻灯片: ${targetSlide.title}`);
+                } else {
+                    console.log(`未找到幻灯片元素: slide-${targetSlide.id}`);
                 }
             }
         }
@@ -651,22 +706,30 @@
         // 切换配置面板
         function toggleConfig() {
             const panel = document.getElementById('configPanel');
-            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+            console.log("切换配置面板，当前状态:", panel.style.display);
+            panel.style.display = panel.style.display === 'none' || panel.style.display === '' ? 'block' : 'none';
+            console.log("配置面板新状态:", panel.style.display);
         }
 
         // 应用配置
         function applyConfig() {
+            console.log("应用配置...");
+            
             config.host = document.getElementById('hostSelect').value;
             config.worshipSong = document.getElementById('worshipSelect').value;
             config.teaching = document.getElementById('teachingSelect').value;
             config.isFirstWeek = document.getElementById('communionCheck').checked;
             config.hasBirthday = document.getElementById('birthdayCheck').checked;
             
+            console.log("新配置:", config);
+            
             updateActiveSlides();
             generateNavigation();
             generateSlides();
             showSlide(0);
             toggleConfig();
+            
+            console.log("配置应用完成");
         }
 
         // 键盘控制
@@ -677,7 +740,10 @@
         });
 
         // 初始化
-        window.onload = init;
+        window.onload = function() {
+            console.log("页面加载完成，开始初始化...");
+            init();
+        };
     </script>
 </body>
 </html>
