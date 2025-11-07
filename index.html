@@ -217,6 +217,31 @@
             border: 1px solid #ffcc00;
             border-radius: 3px;
         }
+        
+        /* 配置面板 */
+        .config-panel {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.95);
+            padding: 30px;
+            border-radius: 15px;
+            border: 2px solid #ffcc00;
+            z-index: 1000;
+            width: 80%;
+            max-width: 600px;
+            color: white;
+        }
+        
+        .video-placeholder {
+            margin: 20px;
+            padding: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            border: 2px dashed #ffcc00;
+        }
     </style>
 </head>
 <body>
@@ -226,7 +251,7 @@
     </div>
     
     <!-- 主内容区域 -->
-    <div class="main-content">
+    <div class="main-content" id="mainContent">
         <!-- 所有幻灯片将通过JavaScript动态生成 -->
     </div>
     
@@ -238,8 +263,8 @@
     </div>
     
     <!-- 配置面板 -->
-    <div id="configPanel" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.9); padding: 30px; border-radius: 15px; border: 2px solid #ffcc00; z-index: 1000; width: 80%; max-width: 600px;">
-        <h2 style="color: #ffcc00; margin-bottom: 20px;">本周聚会设置</h2>
+    <div class="config-panel" id="configPanel">
+        <h2 style="color: #ffcc00; margin-bottom: 20px; text-align: center;">本周聚会设置</h2>
         
         <div class="selector">
             <label style="color: white;">主持人:</label>
@@ -269,7 +294,8 @@
                 <option value="1">跨越的人生 第1讲</option>
                 <option value="2">跨越的人生 第2讲</option>
                 <option value="3">跨越的人生 第3讲</option>
-                <!-- 可以继续添加到137个 -->
+                <option value="4">跨越的人生 第4讲</option>
+                <option value="5">跨越的人生 第5讲</option>
             </select>
         </div>
         
@@ -324,9 +350,9 @@
 
         // 初始化
         function init() {
+            updateActiveSlides();
             generateNavigation();
             generateSlides();
-            updateActiveSlides();
             showSlide(0);
         }
 
@@ -346,7 +372,7 @@
 
         // 生成所有幻灯片
         function generateSlides() {
-            const mainContent = document.querySelector('.main-content');
+            const mainContent = document.getElementById('mainContent');
             mainContent.innerHTML = '';
             
             slidesData.forEach(slide => {
@@ -392,7 +418,7 @@
                         <div class="slide-content">
                             <h2 class="large-text">敬拜歌曲视频</h2>
                             <p class="medium-text">${config.worshipSong}</p>
-                            <div style="margin: 20px; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 10px;">
+                            <div class="video-placeholder">
                                 <p class="normal-text">🎵 视频播放区域 🎵</p>
                             </div>
                         </div>
@@ -403,6 +429,7 @@
                             <h2 class="large-text">聖 餐 禮</h2>
                             <p class="medium-text">主領：王蕭殷 牧師</p>
                             <p class="scripture">"這是我為你們捨的身體..."</p>
+                            <p class="normal-text">（每月第一周舉行）</p>
                         </div>
                     `;
                 case 'teaching':
@@ -410,7 +437,7 @@
                         <div class="slide-content">
                             <h2 class="large-text">劉彤牧師短講</h2>
                             <p class="medium-text">跨越的人生 第${config.teaching}講</p>
-                            <div style="margin: 20px; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 10px;">
+                            <div class="video-placeholder">
                                 <p class="normal-text">📺 短講视频播放 📺</p>
                             </div>
                         </div>
@@ -426,7 +453,113 @@
                             <div class="list-item normal-text">得勝的生活</div>
                         </div>
                     `;
-                // 其他幻灯片类型...
+                case 'review':
+                    return `
+                        <div class="slide-content">
+                            <h2 class="large-text">主日信息回顾</h2>
+                            <p class="normal-text">本週主日信息重點分享</p>
+                            <div class="list-item normal-text">信息主題：神的恩典夠用</div>
+                            <div class="list-item normal-text">經文：哥林多後書 12:9</div>
+                            <div class="list-item normal-text">分享：輪值同工</div>
+                        </div>
+                    `;
+                case 'sharing':
+                    return `
+                        <div class="slide-content">
+                            <h2 class="large-text">話語分享</h2>
+                            <p class="normal-text">小組分享與討論時間</p>
+                            <div class="list-item normal-text">分享主題：如何在生活中經歷神</div>
+                            <div class="list-item normal-text">討論時間：15分鐘</div>
+                        </div>
+                    `;
+                case 'scripture':
+                    return `
+                        <div class="slide-content">
+                            <h2 class="large-text">本週經文查考</h2>
+                            <p class="scripture">"你們就是基督的身子，並且各自作肢體。"</p>
+                            <p class="scripture">～ 哥林多前書 12:27</p>
+                            <div class="list-item normal-text">查考重點：教會合一</div>
+                            <div class="list-item normal-text">應用：彼此相顧</div>
+                        </div>
+                    `;
+                case 'announcement':
+                    return `
+                        <div class="slide-content">
+                            <h2 class="large-text">家事報告</h2>
+                            <div class="list-item normal-text">10月1日開始第四季課程</div>
+                            <div class="list-item normal-text">報名請上網 ROLPLI.net</div>
+                            <div class="list-item normal-text">美洲網絡A牧區訓練持續進行中</div>
+                        </div>
+                    `;
+                case 'birthday':
+                    return `
+                        <div class="slide-content">
+                            <h2 class="large-text">本月肢體生日慶生</h2>
+                            <p class="medium-text">生日快樂！</p>
+                            <div class="list-item normal-text">張三 弟兄 - 10月5日</div>
+                            <div class="list-item normal-text">李四 姊妹 - 10月12日</div>
+                            <div class="list-item normal-text">王五 弟兄 - 10月20日</div>
+                            <p class="normal-text" style="margin-top: 20px;">願神賜福壽數加增！</p>
+                        </div>
+                    `;
+                case 'training':
+                    return `
+                        <div class="slide-content">
+                            <h2 class="large-text">生命河領袖學院課程</h2>
+                            <p class="normal-text">裝備課程持續招生中</p>
+                            <div class="time-slot">
+                                <p class="normal-text">時間：每週六 上午9:00-11:00</p>
+                                <p class="normal-text">地點：教會副堂</p>
+                            </div>
+                        </div>
+                    `;
+                case 'prayerMeeting':
+                    return `
+                        <div class="slide-content">
+                            <h2 class="large-text">烈火禱告會</h2>
+                            <p class="normal-text">每週三晚上7:30</p>
+                            <div class="time-slot">
+                                <p class="normal-text">美西：7:00 AM - 9:00 AM</p>
+                                <p class="normal-text">北京/台北：10:00 PM - 00:00 AM</p>
+                            </div>
+                        </div>
+                    `;
+                case 'qrcode':
+                    return `
+                        <div class="slide-content">
+                            <h2 class="large-text">請 掃 碼 關 注</h2>
+                            <div style="width: 250px; height: 250px; background: white; margin: 30px auto; display: flex; align-items: center; justify-content: center; border-radius: 15px; font-weight: bold; color: black; font-size: 1.5rem;">
+                                QR CODE
+                            </div>
+                        </div>
+                    `;
+                case 'prayer':
+                    return `
+                        <div class="slide-content">
+                            <h2 class="large-text">禱告代禱事項</h2>
+                            <p class="normal-text">請為以下事項代禱：</p>
+                            <div class="list-item normal-text">為教會復興禱告</div>
+                            <div class="list-item normal-text">為病人得醫治禱告</div>
+                            <div class="list-item normal-text">為家庭和睦禱告</div>
+                            <div class="list-item normal-text">為國家社會禱告</div>
+                        </div>
+                    `;
+                case 'lordPrayer':
+                    return `
+                        <div class="slide-content">
+                            <h2 class="large-text">主 禱 文</h2>
+                            <p class="scripture">"我們在天上的父，願人都尊你的名為聖..."</p>
+                            <p class="normal-text" style="margin-top: 30px;">～ 馬太福音 6:9-13</p>
+                        </div>
+                    `;
+                case 'goodbye':
+                    return `
+                        <div class="slide-content">
+                            <h2 class="large-text">下 周 見</h2>
+                            <p class="medium-text">願主賜福保守</p>
+                            <p class="normal-text">直到我們再相會</p>
+                        </div>
+                    `;
                 default:
                     return `
                         <div class="slide-content">
@@ -450,6 +583,8 @@
 
         // 显示指定幻灯片
         function showSlide(index) {
+            if (index < 0 || index >= activeSlides.length) return;
+            
             // 隐藏所有幻灯片
             document.querySelectorAll('.slide').forEach(slide => {
                 slide.classList.remove('active');
@@ -463,8 +598,11 @@
             // 显示当前幻灯片
             const targetSlide = activeSlides[index];
             if (targetSlide) {
-                document.getElementById(`slide-${targetSlide.id}`).classList.add('active');
-                currentSlide = index;
+                const slideElement = document.getElementById(`slide-${targetSlide.id}`);
+                if (slideElement) {
+                    slideElement.classList.add('active');
+                    currentSlide = index;
+                }
             }
         }
 
@@ -507,7 +645,9 @@
         document.addEventListener('keydown', function(e) {
             if (e.key === 'ArrowLeft') prevSlide();
             if (e.key === 'ArrowRight') nextSlide();
-            if (e.key === 'Escape') document.getElementById('configPanel').style.display = 'none';
+            if (e.key === 'Escape') {
+                document.getElementById('configPanel').style.display = 'none';
+            }
         });
 
         // 初始化
