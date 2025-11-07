@@ -4,32 +4,91 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>生命河小組聚會</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Cinzel', serif;
+      background: linear-gradient(to bottom, #000000, #330066);
+      color: white;
+      overflow: hidden;
+    }
+    .slide {
+      display: none;
+      padding: 5vh 10vw;
+      height: 100vh;
+      box-sizing: border-box;
+      text-align: center;
+    }
+    .slide.active {
+      display: block;
+      animation: fadeIn 1s ease-in;
+    }
+    h1, h2 {
+      color: gold;
+      text-shadow: 0 0 20px red;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      font-size: 1.2rem;
+      margin: 0.5rem 0;
+      background: rgba(255,255,255,0.1);
+      padding: 0.5rem;
+      border-radius: 8px;
+    }
+    .nav {
+      position: fixed;
+      bottom: 20px;
+      width: 100%;
+      text-align: center;
+    }
+    button {
+      font-size: 1.2em;
+      margin: 0 10px;
+      padding: 10px 20px;
+      background: gold;
+      border: none;
+      cursor: pointer;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
 <body>
-  <div class="slide active" id="slide-1">
+
+  <div class="slide active">
     <h1>🔥 在基督裡，我們是一個榮耀的家 🔥</h1>
     <p>主持：Elisa 姊妹<br>生命河網路牧區小組聚會<br>2025年11月8日</p>
   </div>
 
-  <div class="slide" id="slide-2">
+  <div class="slide">
     <h2>📌 聚會指南</h2>
     <ul>
       <li>請在名字前加上組號</li>
-      <li>尚未報名者請上網報名</li>
-      <li>有代禱事項請聯絡小組長</li>
-      <li>信息、讀經、敬拜時請靜音</li>
-      <li>請儘量開啟視訊</li>
+      <li>帶來報名者請報組名</li>
+      <li>有代禱事項請移給小組長</li>
+      <li>信息、敬拜時請靜音</li>
+      <li>請盡量開啟視訊</li>
     </ul>
   </div>
 
-  <!-- 更多 slide 按照炸裂版內容繼續添加 -->
-
-  <div class="nav">
-    <button onclick="prevSlide()">⬅ 上一頁</button>
-    <button onclick="nextSlide()">下一頁 ➡</button>
+  <div class="slide">
+    <h2>🎉 歡迎進入神的同在</h2>
+    <p>我們歡迎你，真歡迎你<br>在主裡誠心歡迎！<br>哈利路亞！</p>
   </div>
 
-  <script src="js/script.js"></script>
-</body>
-</html>
+  <div class="slide">
+    <h2>🎶 敬拜讚美</h2>
+    <p>詩歌：基督在我裡面活<br>敬拜領唱：秀玉 姊妹<br>讓我們用心靈與誠實敬拜祂！</p>
+  </div>
+
+  <div class="slide">
+    <h2>💥 信息主題</h2>
+    <p>跨越的人生 · 全新的你<br>講員：劉彤牧師<br>「若有人在基督裡，他就是新造的人」～哥林多後書 5:17</p>
+  </div>
+
+  <div class="slide">
