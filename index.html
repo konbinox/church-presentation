@@ -192,6 +192,28 @@
             z-index: 100;
         }
         
+        /* 图片备用样式 */
+        .image-placeholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+        
+        .gradient-bg-1 { background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d); }
+        .gradient-bg-2 { background: linear-gradient(135deg, #3a7bd5, #00d2ff); }
+        .gradient-bg-3 { background: linear-gradient(135deg, #667eea, #764ba2); }
+        .gradient-bg-4 { background: linear-gradient(135deg, #f093fb, #f5576c); }
+        .gradient-bg-5 { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+        .gradient-bg-6 { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+        .gradient-bg-7 { background: linear-gradient(135deg, #fa709a, #fee140); }
+        .gradient-bg-8 { background: linear-gradient(135deg, #30cfd0, #330867); }
+        .gradient-bg-9 { background: linear-gradient(135deg, #a8edea, #fed6e3); }
+        .gradient-bg-10 { background: linear-gradient(135deg, #5ee7df, #b490ca); }
+        .gradient-bg-11 { background: linear-gradient(135deg, #d299c2, #fef9d7); }
+        
         @media (max-width: 768px) {
             .explosive-text {
                 font-size: 4rem;
@@ -221,7 +243,8 @@
     <div class="page-indicator">页面 <span id="current-page">1</span> / <span id="total-pages">11</span></div>
     
     <!-- 标题页 -->
-    <div class="slide" id="slide1" style="background-image: url('https://source.unsplash.com/1600x900/?sunset,sky')">
+    <div class="slide" id="slide1">
+        <div class="image-placeholder gradient-bg-1"></div>
         <div class="slide-content">
             <h1 class="explosive-text">在 耶 穌 裡 我 們 是 一 家 人</h1>
             <p class="large-text">生命河網路牧區小組聚會</p>
@@ -230,7 +253,8 @@
     </div>
     
     <!-- 敬拜赞美 -->
-    <div class="slide" id="slide2" style="background-image: url('https://source.unsplash.com/1600x900/?praise,worship')">
+    <div class="slide" id="slide2">
+        <div class="image-placeholder gradient-bg-2"></div>
         <div class="slide-content">
             <h2 class="large-text section-title">敬 拜 讚 美</h2>
             <p class="medium-text">基督在我裏面活</p>
@@ -241,7 +265,8 @@
     </div>
     
     <!-- 注意事项 -->
-    <div class="slide" id="slide3" style="background-image: url('https://source.unsplash.com/1600x900/?nature,water')">
+    <div class="slide" id="slide3">
+        <div class="image-placeholder gradient-bg-3"></div>
         <div class="slide-content">
             <h2 class="large-text section-title">注意事項</h2>
             <div class="list-item normal-text">請大家在名字前添加組號</div>
@@ -253,7 +278,8 @@
     </div>
     
     <!-- 欢迎诗歌 -->
-    <div class="slide" id="slide4" style="background-image: url('https://source.unsplash.com/1600x900/?worship,church')">
+    <div class="slide" id="slide4">
+        <div class="image-placeholder gradient-bg-4"></div>
         <div class="slide-content">
             <h2 class="large-text section-title">我們歡迎你</h2>
             <p class="normal-text">我們歡迎你，真歡迎你</p>
@@ -265,7 +291,8 @@
     </div>
     
     <!-- 专题 -->
-    <div class="slide" id="slide5" style="background-image: url('https://source.unsplash.com/1600x900/?communion,bread')">
+    <div class="slide" id="slide5">
+        <div class="image-placeholder gradient-bg-5"></div>
         <div class="slide-content">
             <h2 class="large-text section-title">專 題</h2>
             <p class="medium-text">聖 餐 與 短 講</p>
@@ -274,7 +301,8 @@
     </div>
     
     <!-- 见证时间 -->
-    <div class="slide" id="slide6" style="background-image: url('https://source.unsplash.com/1600x900/?testimony,light')">
+    <div class="slide" id="slide6">
+        <div class="image-placeholder gradient-bg-6"></div>
         <div class="slide-content">
             <h2 class="large-text section-title">大群見證故事／感恩時間</h2>
             <p class="normal-text">(5-10分鐘，限一人一個見證，簡潔生動)</p>
@@ -287,7 +315,8 @@
     </div>
     
     <!-- 经文 -->
-    <div class="slide" id="slide7" style="background-image: url('https://source.unsplash.com/1600x900/?bible,scripture')">
+    <div class="slide" id="slide7">
+        <div class="image-placeholder gradient-bg-7"></div>
         <div class="slide-content">
             <p class="scripture">"你們就是基督的身子，並且各自作肢體。"</p>
             <p class="scripture">～ 哥林多前書 12:27</p>
@@ -295,7 +324,8 @@
     </div>
     
     <!-- 查经 -->
-    <div class="slide" id="slide8" style="background-image: url('https://source.unsplash.com/1600x900/?study,bible')">
+    <div class="slide" id="slide8">
+        <div class="image-placeholder gradient-bg-8"></div>
         <div class="slide-content">
             <h2 class="large-text section-title">我們是基督的身體</h2>
             <p class="medium-text">哥林多前書 12:12-30</p>
@@ -316,7 +346,8 @@
     </div>
     
     <!-- 查经要点 -->
-    <div class="slide" id="slide9" style="background-image: url('https://source.unsplash.com/1600x900/?discussion,group')">
+    <div class="slide" id="slide9">
+        <div class="image-placeholder gradient-bg-9"></div>
         <div class="slide-content">
             <h2 class="large-text section-title">查 經 要 點</h2>
             <div class="list-item normal-text">神造我們的時候，為何給我們的身體有這麼多的肢體（body part）？</div>
@@ -328,7 +359,8 @@
     </div>
     
     <!-- 课程信息 -->
-    <div class="slide" id="slide10" style="background-image: url('https://source.unsplash.com/1600x900/?training,class')">
+    <div class="slide" id="slide10">
+        <div class="image-placeholder gradient-bg-10"></div>
         <div class="slide-content">
             <h2 class="large-text section-title">課程信息</h2>
             <p class="normal-text">10 月 1 日開始第四季課程，報名請上網 <span class="highlight">ROLPLI.net</span> 或洽 <span class="highlight">ROLCC Social</span></p>
@@ -351,7 +383,8 @@
     </div>
     
     <!-- 结尾 -->
-    <div class="slide" id="slide11" style="background-image: url('https://source.unsplash.com/1600x900/?goodbye,farewell')">
+    <div class="slide" id="slide11">
+        <div class="image-placeholder gradient-bg-11"></div>
         <div class="slide-content">
             <h2 class="large-text section-title">請 掃 碼 關 注</h2>
             <div class="qr-code">QR CODE</div>
