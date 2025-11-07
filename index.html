@@ -92,6 +92,11 @@
             margin: 15px 0;
         }
         
+        .small-text {
+            font-size: 2rem;
+            margin: 10px 0;
+        }
+        
         .scripture {
             font-style: italic;
             color: #ffcc00;
@@ -133,6 +138,25 @@
             border-radius: 15px;
             margin: 15px 0;
             border-left: 8px solid #ffcc00;
+        }
+        
+        .video-link {
+            display: inline-block;
+            background: rgba(255, 204, 0, 0.9);
+            color: #000;
+            padding: 15px 30px;
+            margin: 15px 10px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 2.2rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        .video-link:hover {
+            background: rgba(255, 255, 255, 0.95);
+            transform: translateY(-3px);
         }
         
         .qr-code {
@@ -213,6 +237,7 @@
         .gradient-bg-9 { background: linear-gradient(135deg, #a8edea, #fed6e3); }
         .gradient-bg-10 { background: linear-gradient(135deg, #5ee7df, #b490ca); }
         .gradient-bg-11 { background: linear-gradient(135deg, #d299c2, #fef9d7); }
+        .gradient-bg-12 { background: linear-gradient(135deg, #ff6b6b, #ffd93d); }
         
         @media (max-width: 768px) {
             .explosive-text {
@@ -231,16 +256,25 @@
                 font-size: 1.8rem;
             }
             
+            .small-text {
+                font-size: 1.6rem;
+            }
+            
             .nav-btn {
                 padding: 12px 20px;
                 font-size: 1.5rem;
+            }
+            
+            .video-link {
+                padding: 12px 20px;
+                font-size: 1.8rem;
             }
         }
     </style>
 </head>
 <body>
     <!-- 页面指示器 -->
-    <div class="page-indicator">页面 <span id="current-page">1</span> / <span id="total-pages">11</span></div>
+    <div class="page-indicator">页面 <span id="current-page">1</span> / <span id="total-pages">12</span></div>
     
     <!-- 标题页 -->
     <div class="slide" id="slide1">
@@ -264,9 +298,23 @@
         </div>
     </div>
     
-    <!-- 注意事项 -->
+    <!-- 刘彤牧师信息 -->
     <div class="slide" id="slide3">
         <div class="image-placeholder gradient-bg-3"></div>
+        <div class="slide-content">
+            <h2 class="large-text section-title">劉彤牧師信息</h2>
+            <p class="medium-text">跨越的人生</p>
+            <p class="medium-text">全新的你</p>
+            <div style="margin: 30px 0;">
+                <a href="#" class="video-link">观看视频链接 1</a>
+                <a href="#" class="video-link">观看视频链接 2</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 注意事项 -->
+    <div class="slide" id="slide4">
+        <div class="image-placeholder gradient-bg-4"></div>
         <div class="slide-content">
             <h2 class="large-text section-title">注意事項</h2>
             <div class="list-item normal-text">請大家在名字前添加組號</div>
@@ -278,8 +326,8 @@
     </div>
     
     <!-- 欢迎诗歌 -->
-    <div class="slide" id="slide4">
-        <div class="image-placeholder gradient-bg-4"></div>
+    <div class="slide" id="slide5">
+        <div class="image-placeholder gradient-bg-5"></div>
         <div class="slide-content">
             <h2 class="large-text section-title">我們歡迎你</h2>
             <p class="normal-text">我們歡迎你，真歡迎你</p>
@@ -291,8 +339,8 @@
     </div>
     
     <!-- 专题 -->
-    <div class="slide" id="slide5">
-        <div class="image-placeholder gradient-bg-5"></div>
+    <div class="slide" id="slide6">
+        <div class="image-placeholder gradient-bg-6"></div>
         <div class="slide-content">
             <h2 class="large-text section-title">專 題</h2>
             <p class="medium-text">聖 餐 與 短 講</p>
@@ -301,8 +349,8 @@
     </div>
     
     <!-- 见证时间 -->
-    <div class="slide" id="slide6">
-        <div class="image-placeholder gradient-bg-6"></div>
+    <div class="slide" id="slide7">
+        <div class="image-placeholder gradient-bg-7"></div>
         <div class="slide-content">
             <h2 class="large-text section-title">大群見證故事／感恩時間</h2>
             <p class="normal-text">(5-10分鐘，限一人一個見證，簡潔生動)</p>
@@ -315,8 +363,8 @@
     </div>
     
     <!-- 经文 -->
-    <div class="slide" id="slide7">
-        <div class="image-placeholder gradient-bg-7"></div>
+    <div class="slide" id="slide8">
+        <div class="image-placeholder gradient-bg-8"></div>
         <div class="slide-content">
             <p class="scripture">"你們就是基督的身子，並且各自作肢體。"</p>
             <p class="scripture">～ 哥林多前書 12:27</p>
@@ -324,8 +372,8 @@
     </div>
     
     <!-- 查经 -->
-    <div class="slide" id="slide8">
-        <div class="image-placeholder gradient-bg-8"></div>
+    <div class="slide" id="slide9">
+        <div class="image-placeholder gradient-bg-9"></div>
         <div class="slide-content">
             <h2 class="large-text section-title">我們是基督的身體</h2>
             <p class="medium-text">哥林多前書 12:12-30</p>
@@ -346,8 +394,8 @@
     </div>
     
     <!-- 查经要点 -->
-    <div class="slide" id="slide9">
-        <div class="image-placeholder gradient-bg-9"></div>
+    <div class="slide" id="slide10">
+        <div class="image-placeholder gradient-bg-10"></div>
         <div class="slide-content">
             <h2 class="large-text section-title">查 經 要 點</h2>
             <div class="list-item normal-text">神造我們的時候，為何給我們的身體有這麼多的肢體（body part）？</div>
@@ -359,8 +407,8 @@
     </div>
     
     <!-- 课程信息 -->
-    <div class="slide" id="slide10">
-        <div class="image-placeholder gradient-bg-10"></div>
+    <div class="slide" id="slide11">
+        <div class="image-placeholder gradient-bg-11"></div>
         <div class="slide-content">
             <h2 class="large-text section-title">課程信息</h2>
             <p class="normal-text">10 月 1 日開始第四季課程，報名請上網 <span class="highlight">ROLPLI.net</span> 或洽 <span class="highlight">ROLCC Social</span></p>
@@ -383,8 +431,8 @@
     </div>
     
     <!-- 结尾 -->
-    <div class="slide" id="slide11">
-        <div class="image-placeholder gradient-bg-11"></div>
+    <div class="slide" id="slide12">
+        <div class="image-placeholder gradient-bg-12"></div>
         <div class="slide-content">
             <h2 class="large-text section-title">請 掃 碼 關 注</h2>
             <div class="qr-code">QR CODE</div>
