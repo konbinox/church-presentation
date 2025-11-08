@@ -292,6 +292,39 @@
             text-align: center;
             margin-top: 25px;
         }
+        /* 添加到CSS中 */
+        .music-controls {
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .music-btn {
+            background: linear-gradient(45deg, #ffcc00, #ffaa00);
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            margin: 10px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.8rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 204, 0, 0.3);
+        }
+        
+        .music-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 204, 0, 0.5);
+        }
+        
+        .music-btn:active {
+            transform: translateY(0);
+        }
+        
+        /* 音频播放器隐藏，只通过按钮控制 */
+        audio {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -405,6 +438,7 @@
             'prayer': 'slide16.jpg',
             'lordPrayer': 'slide17.jpg',
             'goodbye': 'slide18.jpg'
+            'newFriends': 'slide19.jpg', // 新增这一行，可以使用现有的slide19.jpg或其他
         };
 
         // 配置数据
@@ -426,6 +460,11 @@
             generateNavigation();
             generateSlides();
             showSlide(0);
+            
+            // 预加载欢迎歌曲
+            const welcomeAudio = new Audio('./music/欢迎歌.mp3');
+            welcomeAudio.preload = 'auto';
+            
             console.log("初始化完成");
         }
 
@@ -484,6 +523,29 @@
                             <p class="medium-text" id="hostName">主持：${config.host}</p>
                         </div>
                     `;
+                // 在 generateSlideContent 函数的 switch 语句中添加新的 case
+               case 'newFriends':
+                return `
+                    <div class="slide-content">
+                        <h2 class="large-text">欢迎新朋友</h2>
+                        <p class="medium-text">欢迎加入生命河网络教会大家庭！</p>
+                        <p class="normal-text">我们很高兴认识您</p>
+                        
+                        <div class="music-controls">
+                            <button id="welcomeSongBtn" class="music-btn">
+                                🎵 播放欢迎歌曲 🎵
+                            </button>
+                            <audio id="welcomeSong">
+                                <source src="./music/欢迎歌.mp3" type="audio/mpeg">
+                            </audio>
+                        </div>
+                        
+                        <div class="list-item normal-text">愿神赐福您在我们中间</div>
+                        <div class="list-item normal-text">如有需要请随时联系同工</div>
+                        <div class="list-item normal-text">让我们一起成长在主爱中</div>
+                    </div>
+                `;
+                
                 case 'workers':
                     return `
                         <div class="slide-content">
@@ -677,6 +739,18 @@
                 console.log("无效的幻灯片索引:", index);
                 return;
             }
+             // 停止所有可能正在播放的音乐
+            document.querySelectorAll('audio').forEach(audio => {
+                audio.pause();
+                audio.currentTime = 0;
+            });
+            
+            // 重置所有音乐按钮
+            document.querySelectorAll('.music-btn').forEach(btn => {
+                btn.innerHTML = '🎵 播放欢迎歌曲 🎵';
+            });
+            
+            console.log(`显示幻灯片: ${index}`);
             
             console.log(`显示幻灯片: ${index}`);
             
