@@ -292,7 +292,8 @@
             text-align: center;
             margin-top: 25px;
         }
-        /* 添加到CSS中 */
+        
+        /* 音乐控制样式 */
         .music-controls {
             margin: 20px 0;
             text-align: center;
@@ -398,7 +399,7 @@
         // 幻灯片数据
         const slidesData = [
             { id: 1, title: "起始页面", type: "start" },
-            { id: 2, title: "新朋友欢迎", type: "newFriends" }, // 新增这一行
+            { id: 2, title: "新朋友欢迎", type: "newFriends" },
             { id: 3, title: "同工列表", type: "workers" },
             { id: 4, title: "敬拜页面", type: "worship" },
             { id: 5, title: "敬拜歌曲", type: "worshipVideo" },
@@ -418,27 +419,27 @@
             { id: 19, title: "下周见", type: "goodbye" }
         ];
 
-        // 背景图片映射 - 修正为 slide1.jpg 到 slide23.jpg
+        // 背景图片映射
         const backgroundImages = {
             'start': 'slide1.jpg',
-            'workers': 'slide2.jpg', 
-            'worship': 'slide3.jpg',
-            'worshipVideo': 'slide4.jpg',
-            'communion': 'slide5.jpg',
-            'teaching': 'slide6.jpg',
-            'testimony': 'slide7.jpg',
-            'review': 'slide8.jpg',
-            'sharing': 'slide9.jpg',
-            'scripture': 'slide10.jpg',
-            'announcement': 'slide11.jpg',
-            'birthday': 'slide12.jpg',
-            'training': 'slide13.jpg',
-            'prayerMeeting': 'slide14.jpg',
-            'qrcode': 'slide15.jpg',
-            'prayer': 'slide16.jpg',
-            'lordPrayer': 'slide17.jpg',
-            'goodbye': 'slide18.jpg'
-            'newFriends': 'slide19.jpg', // 新增这一行，可以使用现有的slide19.jpg或其他
+            'newFriends': 'slide2.jpg',
+            'workers': 'slide3.jpg', 
+            'worship': 'slide4.jpg',
+            'worshipVideo': 'slide5.jpg',
+            'communion': 'slide6.jpg',
+            'teaching': 'slide7.jpg',
+            'testimony': 'slide8.jpg',
+            'review': 'slide9.jpg',
+            'sharing': 'slide10.jpg',
+            'scripture': 'slide11.jpg',
+            'announcement': 'slide12.jpg',
+            'birthday': 'slide13.jpg',
+            'training': 'slide14.jpg',
+            'prayerMeeting': 'slide15.jpg',
+            'qrcode': 'slide16.jpg',
+            'prayer': 'slide17.jpg',
+            'lordPrayer': 'slide18.jpg',
+            'goodbye': 'slide19.jpg'
         };
 
         // 配置数据
@@ -452,6 +453,32 @@
 
         let currentSlide = 0;
         let activeSlides = [];
+        let welcomeAudio = null;
+
+        // 音乐播放功能
+        function playWelcomeSong() {
+            if (!welcomeAudio) {
+                welcomeAudio = new Audio('./music/欢迎歌.mp3');
+                welcomeAudio.onended = function() {
+                    const btn = document.getElementById('welcomeSongBtn');
+                    if (btn) btn.innerHTML = '🎵 播放欢迎歌曲 🎵';
+                };
+            }
+            
+            const btn = document.getElementById('welcomeSongBtn');
+            
+            if (welcomeAudio.paused) {
+                welcomeAudio.play().then(() => {
+                    if (btn) btn.innerHTML = '⏸️ 暂停欢迎歌曲';
+                }).catch(error => {
+                    console.error('播放失败:', error);
+                    alert('播放失败，请检查音频文件路径');
+                });
+            } else {
+                welcomeAudio.pause();
+                if (btn) btn.innerHTML = '🎵 播放欢迎歌曲 🎵';
+            }
+        }
 
         // 初始化
         function init() {
@@ -460,11 +487,6 @@
             generateNavigation();
             generateSlides();
             showSlide(0);
-            
-            // 预加载欢迎歌曲
-            const welcomeAudio = new Audio('./music/欢迎歌.mp3');
-            welcomeAudio.preload = 'auto';
-            
             console.log("初始化完成");
         }
 
@@ -502,7 +524,7 @@
                 slideElement.className = 'slide';
                 slideElement.id = `slide-${slide.id}`;
                 
-                // 设置背景图片 - 修正为 slide1.jpg 格式
+                // 设置背景图片
                 const imageUrl = `./backgrounds/${backgroundImages[slide.type] || 'slide1.jpg'}`;
                 console.log(`设置幻灯片 ${slide.id} 背景: ${imageUrl}`);
                 slideElement.style.backgroundImage = `url('${imageUrl}')`;
@@ -523,29 +545,24 @@
                             <p class="medium-text" id="hostName">主持：${config.host}</p>
                         </div>
                     `;
-                // 在 generateSlideContent 函数的 switch 语句中添加新的 case
-               case 'newFriends':
-                return `
-                    <div class="slide-content">
-                        <h2 class="large-text">欢迎新朋友</h2>
-                        <p class="medium-text">欢迎加入生命河网络教会大家庭！</p>
-                        <p class="normal-text">我们很高兴认识您</p>
-                        
-                        <div class="music-controls">
-                            <button id="welcomeSongBtn" class="music-btn">
-                                🎵 播放欢迎歌曲 🎵
-                            </button>
-                            <audio id="welcomeSong">
-                                <source src="./music/欢迎歌.mp3" type="audio/mpeg">
-                            </audio>
+                case 'newFriends':
+                    return `
+                        <div class="slide-content">
+                            <h2 class="large-text">欢迎新朋友</h2>
+                            <p class="medium-text">欢迎加入生命河网络教会大家庭！</p>
+                            <p class="normal-text">我们很高兴认识您</p>
+                            
+                            <div class="music-controls">
+                                <button id="welcomeSongBtn" class="music-btn" onclick="playWelcomeSong()">
+                                    🎵 播放欢迎歌曲 🎵
+                                </button>
+                            </div>
+                            
+                            <div class="list-item normal-text">愿神赐福您在我们中间</div>
+                            <div class="list-item normal-text">如有需要请随时联系同工</div>
+                            <div class="list-item normal-text">让我们一起成长在主爱中</div>
                         </div>
-                        
-                        <div class="list-item normal-text">愿神赐福您在我们中间</div>
-                        <div class="list-item normal-text">如有需要请随时联系同工</div>
-                        <div class="list-item normal-text">让我们一起成长在主爱中</div>
-                    </div>
-                `;
-                
+                    `;
                 case 'workers':
                     return `
                         <div class="slide-content">
@@ -739,18 +756,14 @@
                 console.log("无效的幻灯片索引:", index);
                 return;
             }
-             // 停止所有可能正在播放的音乐
-            document.querySelectorAll('audio').forEach(audio => {
-                audio.pause();
-                audio.currentTime = 0;
-            });
             
-            // 重置所有音乐按钮
-            document.querySelectorAll('.music-btn').forEach(btn => {
-                btn.innerHTML = '🎵 播放欢迎歌曲 🎵';
-            });
-            
-            console.log(`显示幻灯片: ${index}`);
+            // 停止欢迎音乐
+            if (welcomeAudio && !welcomeAudio.paused) {
+                welcomeAudio.pause();
+                welcomeAudio.currentTime = 0;
+                const btn = document.getElementById('welcomeSongBtn');
+                if (btn) btn.innerHTML = '🎵 播放欢迎歌曲 🎵';
+            }
             
             console.log(`显示幻灯片: ${index}`);
             
