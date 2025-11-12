@@ -361,6 +361,50 @@
             transform: translateY(0);
         }
         
+        /* 生日页面特殊样式 */
+        .birthday-content {
+            animation: birthdayGlow 3s infinite alternate;
+        }
+        
+        @keyframes birthdayGlow {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
+        }
+        
+        .birthday-cake {
+            font-size: 4rem;
+            margin: 20px 0;
+            animation: cakeFloat 3s infinite ease-in-out;
+        }
+        
+        @keyframes cakeFloat {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0); }
+        }
+        
+        .birthday-names {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .birthday-person {
+            background: rgba(255, 204, 0, 0.2);
+            padding: 15px 25px;
+            border-radius: 10px;
+            border: 1px solid #ffcc00;
+            font-size: 1.8rem;
+            animation: personGlow 2s infinite alternate;
+        }
+        
+        @keyframes personGlow {
+            0% { box-shadow: 0 0 5px rgba(255, 204, 0, 0.5); }
+            100% { box-shadow: 0 0 20px rgba(255, 204, 0, 0.8); }
+        }
+        
         /* 音频播放器隐藏，只通过按钮控制 */
         audio {
             display: none;
@@ -452,6 +496,11 @@
             .control-btn {
                 padding: 8px 15px;
                 font-size: 1rem;
+            }
+            
+            .birthday-person {
+                font-size: 1.5rem;
+                padding: 10px 15px;
             }
         }
         
@@ -618,6 +667,7 @@
         let currentSlide = 0;
         let activeSlides = [];
         let welcomeAudio = null;
+        let birthdayAudio = null;
         let timerInterval = null;
         let slideStartTime = null;
         let isTimerVisible = false;
@@ -645,6 +695,48 @@
             } else {
                 welcomeAudio.pause();
                 if (btn) btn.innerHTML = '🎵 播放欢迎歌曲 🎵';
+            }
+        }
+
+        // 生日歌播放功能
+        function playBirthdaySong() {
+            if (!birthdayAudio) {
+                birthdayAudio = new Audio('./music/生日歌.mp3');
+                birthdayAudio.onended = function() {
+                    const btn = document.getElementById('birthdaySongBtn');
+                    if (btn) btn.innerHTML = '🎂 播放生日歌 🎂';
+                };
+            }
+            
+            const btn = document.getElementById('birthdaySongBtn');
+            
+            if (birthdayAudio.paused) {
+                birthdayAudio.play().then(() => {
+                    if (btn) btn.innerHTML = '⏸️ 暂停生日歌';
+                }).catch(error => {
+                    console.error('播放失败:', error);
+                    alert('播放失败，请检查音频文件路径');
+                });
+            } else {
+                birthdayAudio.pause();
+                if (btn) btn.innerHTML = '🎂 播放生日歌 🎂';
+            }
+        }
+
+        // 停止所有音乐
+        function stopAllMusic() {
+            if (welcomeAudio && !welcomeAudio.paused) {
+                welcomeAudio.pause();
+                welcomeAudio.currentTime = 0;
+                const welcomeBtn = document.getElementById('welcomeSongBtn');
+                if (welcomeBtn) welcomeBtn.innerHTML = '🎵 播放欢迎歌曲 🎵';
+            }
+            
+            if (birthdayAudio && !birthdayAudio.paused) {
+                birthdayAudio.pause();
+                birthdayAudio.currentTime = 0;
+                const birthdayBtn = document.getElementById('birthdaySongBtn');
+                if (birthdayBtn) birthdayBtn.innerHTML = '🎂 播放生日歌 🎂';
             }
         }
 
@@ -902,12 +994,23 @@
                     `;
                 case 'birthday':
                     return `
-                        <div class="slide-content">
+                        <div class="slide-content birthday-content">
                             <h2 class="large-text">本月肢體生日慶生</h2>
+                            <div class="birthday-cake">🎂</div>
                             <p class="medium-text">生日快樂！</p>
-                            <div class="list-item normal-text">張三 弟兄 - 10月5日</div>
-                            <div class="list-item normal-text">李四 姊妹 - 10月12日</div>
-                            <div class="list-item normal-text">王五 弟兄 - 10月20日</div>
+                            
+                            <div class="birthday-names">
+                                <div class="birthday-person">張三 弟兄 - 10月5日</div>
+                                <div class="birthday-person">李四 姊妹 - 10月12日</div>
+                                <div class="birthday-person">王五 弟兄 - 10月20日</div>
+                            </div>
+                            
+                            <div class="music-controls">
+                                <button id="birthdaySongBtn" class="music-btn" onclick="playBirthdaySong()">
+                                    🎂 播放生日歌 🎂
+                                </button>
+                            </div>
+                            
                             <p class="normal-text" style="margin-top: 20px;">願神賜福壽數加增！</p>
                         </div>
                     `;
@@ -998,13 +1101,8 @@
                 return;
             }
             
-            // 停止欢迎音乐
-            if (welcomeAudio && !welcomeAudio.paused) {
-                welcomeAudio.pause();
-                welcomeAudio.currentTime = 0;
-                const btn = document.getElementById('welcomeSongBtn');
-                if (btn) btn.innerHTML = '🎵 播放欢迎歌曲 🎵';
-            }
+            // 停止所有音乐
+            stopAllMusic();
             
             console.log(`显示幻灯片: ${index}`);
             
