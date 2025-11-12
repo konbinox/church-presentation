@@ -342,7 +342,6 @@
     <!-- 控制面板 -->
     <div class="control-panel">
         <button class="control-btn" onclick="toggleConfig()">设置</button>
-        <button class="control-btn" onclick="goToAdmin()">后台管理</button>
     </div>
     
     <!-- 配置面板 -->
@@ -455,15 +454,6 @@
         let currentSlide = 0;
         let activeSlides = [];
         let welcomeAudio = null;
-
-        // 跳转到后台管理页面
-        function goToAdmin() {
-            if (confirm('确定要进入后台管理系统吗？')) {
-                window.open('admin.html', '_blank');
-                // 或者使用下面这行在当前窗口打开：
-                // window.location.href = 'admin.html';
-            }
-        }
 
         // 音乐播放功能
         function playWelcomeSong() {
