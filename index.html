@@ -442,6 +442,143 @@
             transition: width 0.3s ease;
         }
         
+        /* 分组记录面板样式 */
+        .grouping-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            border: 2px solid #ffcc00;
+            z-index: 1000;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            display: none;
+        }
+        
+        .grouping-header {
+            color: #ffcc00;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+        
+        .group-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .group-btn {
+            background: linear-gradient(45deg, #0078d7, #2d8cff);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .group-btn:hover {
+            background: linear-gradient(45deg, #2d8cff, #0078d7);
+        }
+        
+        .groups-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .group-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            border: 1px solid #ffcc00;
+        }
+        
+        .group-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ffcc00;
+        }
+        
+        .group-title {
+            color: #ffcc00;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .group-members {
+            min-height: 100px;
+        }
+        
+        .member-item {
+            padding: 8px;
+            margin: 5px 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+            border-left: 3px solid #0078d7;
+            cursor: move;
+        }
+        
+        .member-item.dragging {
+            opacity: 0.5;
+        }
+        
+        .available-members {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            border: 1px dashed #ffcc00;
+        }
+        
+        .available-header {
+            color: #ffcc00;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .export-controls {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #ffcc00;
+        }
+        
+        .group-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            background: rgba(255, 204, 0, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffcc00;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+        
         /* 响应式设计 */
         @media (max-width: 768px) {
             .nav-sidebar {
@@ -502,6 +639,14 @@
                 font-size: 1.5rem;
                 padding: 10px 15px;
             }
+            
+            .group-controls {
+                flex-direction: column;
+            }
+            
+            .groups-container {
+                grid-template-columns: 1fr;
+            }
         }
         
         /* 触摸手势提示 */
@@ -548,11 +693,58 @@
         ← 左滑上一页 | 右滑下一页 →
     </div>
     
+    <!-- 分组记录面板 -->
+    <div class="grouping-panel" id="groupingPanel">
+        <h2 class="grouping-header">Zoom会议分组记录</h2>
+        
+        <div class="group-stats">
+            <div class="stat-item">
+                <div class="stat-value" id="totalParticipants">0</div>
+                <div class="stat-label">总人数</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="groupCount">0</div>
+                <div class="stat-label">分组数量</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="avgGroupSize">0</div>
+                <div class="stat-label">平均每组人数</div>
+            </div>
+        </div>
+        
+        <div class="group-controls">
+            <button class="group-btn" onclick="createNewGroup()">新建分组</button>
+            <button class="group-btn" onclick="autoGroup()">自动分组</button>
+            <button class="group-btn" onclick="clearAllGroups()">清空分组</button>
+            <button class="group-btn" onclick="loadSampleData()">加载示例数据</button>
+            <button class="group-btn" onclick="connectToZoom()">连接Zoom</button>
+            <input type="number" id="groupSize" placeholder="每组人数" style="padding: 10px; border-radius: 5px; border: 1px solid #ffcc00; background: rgba(255,255,255,0.1); color: white;" value="4">
+        </div>
+        
+        <div class="groups-container" id="groupsContainer">
+            <!-- 分组将通过JavaScript动态生成 -->
+        </div>
+        
+        <div class="available-members">
+            <div class="available-header">未分组与会者 (<span id="availableCount">0</span>)</div>
+            <div class="group-members" id="availableMembers" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <!-- 未分组的与会者 -->
+            </div>
+        </div>
+        
+        <div class="export-controls">
+            <button class="group-btn" onclick="exportGrouping()">导出分组记录</button>
+            <button class="group-btn" onclick="printGrouping()">打印分组</button>
+            <button class="group-btn" onclick="toggleGroupingPanel()">关闭</button>
+        </div>
+    </div>
+    
     <!-- 控制面板 -->
     <div class="control-panel">
         <button class="control-btn" onclick="previousSlide()">上一页</button>
         <button class="control-btn" onclick="nextSlide()">下一页</button>
         <button class="control-btn" onclick="toggleTimer()">计时器</button>
+        <button class="control-btn" onclick="toggleGroupingPanel()">分组记录</button>
         <button class="control-btn" onclick="toggleConfig()">设置</button>
         <button class="control-btn" onclick="toggleFullscreen()">全屏</button>
     </div>
@@ -673,6 +865,14 @@
         let isTimerVisible = false;
         let isNavCollapsed = false;
 
+        // 分组记录相关变量
+        let groups = [];
+        let availableMembers = [];
+        let nextGroupId = 1;
+        let dragSrcElement = null;
+
+        // ==================== 幻灯片系统函数 ====================
+        
         // 音乐播放功能
         function playWelcomeSong() {
             if (!welcomeAudio) {
@@ -748,6 +948,7 @@
             generateSlides();
             showSlide(0);
             setupEventListeners();
+            initGroupingData();
             console.log("初始化完成");
         }
 
@@ -757,6 +958,7 @@
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape') {
                     document.getElementById('configPanel').style.display = 'none';
+                    document.getElementById('groupingPanel').style.display = 'none';
                 } else if (e.key === 'ArrowLeft') {
                     previousSlide();
                 } else if (e.key === 'ArrowRight') {
@@ -1231,6 +1433,373 @@
             toggleConfig();
             
             console.log("配置应用完成");
+        }
+
+        // ==================== 分组记录系统函数 ====================
+
+        // 初始化分组数据
+        function initGroupingData() {
+            groups = [];
+            availableMembers = [];
+            nextGroupId = 1;
+            updateGroupingDisplay();
+        }
+
+        // 切换分组面板显示
+        function toggleGroupingPanel() {
+            const panel = document.getElementById('groupingPanel');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+            if (panel.style.display === 'block') {
+                updateGroupingDisplay();
+            }
+        }
+
+        // 创建新分组
+        function createNewGroup() {
+            const group = {
+                id: nextGroupId++,
+                name: `小组 ${groups.length + 1}`,
+                members: [],
+                leader: null
+            };
+            groups.push(group);
+            updateGroupingDisplay();
+        }
+
+        // 自动分组
+        function autoGroup() {
+            const groupSize = parseInt(document.getElementById('groupSize').value) || 4;
+            
+            if (availableMembers.length === 0) {
+                alert('没有可分配的与会者');
+                return;
+            }
+            
+            // 清空现有分组
+            groups.forEach(group => group.members = []);
+            
+            // 随机打乱与会者顺序
+            const shuffledMembers = [...availableMembers].sort(() => Math.random() - 0.5);
+            
+            // 确保有足够的分组
+            const neededGroups = Math.ceil(shuffledMembers.length / groupSize);
+            while (groups.length < neededGroups) {
+                createNewGroup();
+            }
+            
+            // 分配与会者到分组
+            shuffledMembers.forEach((member, index) => {
+                const groupIndex = index % groups.length;
+                groups[groupIndex].members.push(member);
+            });
+            
+            availableMembers = [];
+            updateGroupingDisplay();
+        }
+
+        // 清空所有分组
+        function clearAllGroups() {
+            if (confirm('确定要清空所有分组吗？')) {
+                // 将所有成员移回未分组列表
+                groups.forEach(group => {
+                    availableMembers.push(...group.members);
+                });
+                groups = [];
+                updateGroupingDisplay();
+            }
+        }
+
+        // 加载示例数据
+        function loadSampleData() {
+            availableMembers = [
+                { id: 1, name: '张弟兄', type: 'member', gender: 'male' },
+                { id: 2, name: '李姊妹', type: 'member', gender: 'female' },
+                { id: 3, name: '王弟兄', type: 'member', gender: 'male' },
+                { id: 4, name: '陈姊妹', type: 'member', gender: 'female' },
+                { id: 5, name: '刘弟兄', type: 'member', gender: 'male' },
+                { id: 6, name: '杨姊妹', type: 'member', gender: 'female' },
+                { id: 7, name: '赵弟兄', type: 'member', gender: 'male' },
+                { id: 8, name: '黄姊妹', type: 'member', gender: 'female' },
+                { id: 9, name: '周弟兄', type: 'leader', gender: 'male' },
+                { id: 10, name: '吴姊妹', type: 'leader', gender: 'female' }
+            ];
+            updateGroupingDisplay();
+        }
+
+        // 连接Zoom获取真实数据
+        async function connectToZoom() {
+            try {
+                const meetingNumber = prompt('请输入Zoom会议号:');
+                if (!meetingNumber) return;
+                
+                // 模拟从Zoom API获取数据
+                const zoomParticipants = await simulateZoomParticipants(meetingNumber);
+                availableMembers = zoomParticipants;
+                updateGroupingDisplay();
+                alert(`成功从Zoom导入 ${zoomParticipants.length} 名与会者`);
+                
+            } catch (error) {
+                console.error('连接Zoom失败:', error);
+                alert('连接Zoom会议失败');
+            }
+        }
+
+        // 模拟Zoom与会者数据
+        async function simulateZoomParticipants(meetingNumber) {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    const sampleNames = [
+                        '张三', '李四', '王五', '赵六', '钱七', '孙八', '周九', '吴十',
+                        '郑十一', '王十二', '李十三', '张十四', '刘十五', '陈十六'
+                    ];
+                    
+                    const participants = sampleNames.map((name, index) => ({
+                        id: Date.now() + index,
+                        name: name,
+                        type: Math.random() > 0.8 ? 'leader' : 'member',
+                        gender: Math.random() > 0.5 ? 'male' : 'female',
+                        joinTime: new Date()
+                    }));
+                    
+                    resolve(participants);
+                }, 1500);
+            });
+        }
+
+        // 更新分组显示
+        function updateGroupingDisplay() {
+            const groupsContainer = document.getElementById('groupsContainer');
+            const availableMembersContainer = document.getElementById('availableMembers');
+            
+            // 更新分组显示
+            groupsContainer.innerHTML = groups.map(group => `
+                <div class="group-card">
+                    <div class="group-header">
+                        <input type="text" class="group-title" value="${group.name}" 
+                               onchange="updateGroupName(${group.id}, this.value)">
+                        <button class="group-btn" onclick="removeGroup(${group.id})" 
+                                style="background: #ff4444; padding: 5px 10px;">删除</button>
+                    </div>
+                    <div class="group-members" id="group-${group.id}" 
+                         ondrop="drop(event)" ondragover="allowDrop(event)">
+                        ${group.members.map(member => `
+                            <div class="member-item" draggable="true" ondragstart="drag(event)" 
+                                 ondblclick="moveToAvailable(${group.id}, ${member.id})"
+                                 data-member-id="${member.id}">
+                                ${member.type === 'leader' ? '👑 ' : ''}
+                                ${member.name}
+                                ${member.gender === 'male' ? '弟兄' : '姊妹'}
+                                <button onclick="removeMember(${group.id}, ${member.id})" 
+                                        style="float: right; background: transparent; border: none; color: #ff4444; cursor: pointer;">×</button>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div style="margin-top: 10px; font-size: 0.8rem; color: #ccc;">
+                        人数: ${group.members.length}
+                        ${group.leader ? ` | 组长: ${group.leader.name}` : ''}
+                    </div>
+                </div>
+            `).join('');
+            
+            // 更新未分组与会者显示
+            availableMembersContainer.innerHTML = availableMembers.map(member => `
+                <div class="member-item" draggable="true" ondragstart="drag(event)"
+                     ondblclick="assignToBestGroup(${member.id})"
+                     data-member-id="${member.id}">
+                    ${member.type === 'leader' ? '👑 ' : ''}
+                    ${member.name}
+                    ${member.gender === 'male' ? '弟兄' : '姊妹'}
+                </div>
+            `).join('');
+            
+            // 更新统计信息
+            updateStatistics();
+        }
+
+        // 更新统计信息
+        function updateStatistics() {
+            const totalParticipants = availableMembers.length + groups.reduce((sum, group) => sum + group.members.length, 0);
+            const avgGroupSize = groups.length > 0 ? 
+                (totalParticipants - availableMembers.length) / groups.length : 0;
+            
+            document.getElementById('totalParticipants').textContent = totalParticipants;
+            document.getElementById('groupCount').textContent = groups.length;
+            document.getElementById('avgGroupSize').textContent = avgGroupSize.toFixed(1);
+            document.getElementById('availableCount').textContent = availableMembers.length;
+        }
+
+        // 拖放功能
+        function allowDrop(ev) {
+            ev.preventDefault();
+        }
+
+        function drag(ev) {
+            dragSrcElement = ev.target;
+            ev.dataTransfer.setData("text", ev.target.getAttribute('data-member-id'));
+        }
+
+        function drop(ev) {
+            ev.preventDefault();
+            const memberId = parseInt(ev.dataTransfer.getData("text"));
+            const targetGroupId = ev.target.closest('.group-members')?.id.replace('group-', '');
+            
+            if (targetGroupId) {
+                // 拖放到分组
+                moveMemberToGroup(memberId, parseInt(targetGroupId));
+            } else if (ev.target.id === 'availableMembers') {
+                // 拖放到未分组
+                moveMemberToAvailable(memberId);
+            }
+        }
+
+        // 移动成员到分组
+        function moveMemberToGroup(memberId, groupId) {
+            const memberIndex = availableMembers.findIndex(m => m.id === memberId);
+            if (memberIndex === -1) {
+                // 从其他分组移动
+                for (let group of groups) {
+                    const memberIndexInGroup = group.members.findIndex(m => m.id === memberId);
+                    if (memberIndexInGroup !== -1) {
+                        const [member] = group.members.splice(memberIndexInGroup, 1);
+                        const targetGroup = groups.find(g => g.id === groupId);
+                        if (targetGroup) {
+                            targetGroup.members.push(member);
+                        }
+                        break;
+                    }
+                }
+            } else {
+                // 从未分组移动
+                const [member] = availableMembers.splice(memberIndex, 1);
+                const targetGroup = groups.find(g => g.id === groupId);
+                if (targetGroup) {
+                    targetGroup.members.push(member);
+                }
+            }
+            updateGroupingDisplay();
+        }
+
+        // 移动成员到未分组
+        function moveMemberToAvailable(memberId) {
+            for (let group of groups) {
+                const memberIndex = group.members.findIndex(m => m.id === memberId);
+                if (memberIndex !== -1) {
+                    const [member] = group.members.splice(memberIndex, 1);
+                    availableMembers.push(member);
+                    break;
+                }
+            }
+            updateGroupingDisplay();
+        }
+
+        // 双击分配到最合适的分组
+        function assignToBestGroup(memberId) {
+            const memberIndex = availableMembers.findIndex(m => m.id === memberId);
+            if (memberIndex === -1) return;
+            
+            const [member] = availableMembers.splice(memberIndex, 1);
+            
+            // 找到人数最少的分组
+            let bestGroup = groups.reduce((minGroup, group) => {
+                return !minGroup || group.members.length < minGroup.members.length ? group : minGroup;
+            }, null);
+            
+            if (!bestGroup) {
+                createNewGroup();
+                bestGroup = groups[groups.length - 1];
+            }
+            
+            bestGroup.members.push(member);
+            updateGroupingDisplay();
+        }
+
+        // 删除分组
+        function removeGroup(groupId) {
+            const groupIndex = groups.findIndex(g => g.id === groupId);
+            if (groupIndex !== -1) {
+                availableMembers.push(...groups[groupIndex].members);
+                groups.splice(groupIndex, 1);
+                updateGroupingDisplay();
+            }
+        }
+
+        // 从分组中移除成员
+        function removeMember(groupId, memberId) {
+            const group = groups.find(g => g.id === groupId);
+            if (group) {
+                const memberIndex = group.members.findIndex(m => m.id === memberId);
+                if (memberIndex !== -1) {
+                    const [member] = group.members.splice(memberIndex, 1);
+                    availableMembers.push(member);
+                    updateGroupingDisplay();
+                }
+            }
+        }
+
+        // 更新分组名称
+        function updateGroupName(groupId, newName) {
+            const group = groups.find(g => g.id === groupId);
+            if (group) {
+                group.name = newName;
+            }
+        }
+
+        // 导出分组记录
+        function exportGrouping() {
+            const data = {
+                groups: groups,
+                availableMembers: availableMembers,
+                exportTime: new Date().toLocaleString('zh-CN'),
+                totalParticipants: availableMembers.length + groups.reduce((sum, group) => sum + group.members.length, 0)
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `分组记录_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // 打印分组
+        function printGrouping() {
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html>
+                    <head>
+                        <title>分组记录 - ${new Date().toLocaleDateString('zh-CN')}</title>
+                        <style>
+                            body { font-family: Arial, sans-serif; margin: 20px; }
+                            .group { margin-bottom: 30px; border: 1px solid #ccc; padding: 15px; }
+                            .group-title { font-weight: bold; font-size: 1.2em; margin-bottom: 10px; }
+                            .member { margin: 5px 0; padding: 5px; background: #f5f5f5; }
+                        </style>
+                    </head>
+                    <body>
+                        <h1>分组记录</h1>
+                        <p>导出时间: ${new Date().toLocaleString('zh-CN')}</p>
+                        ${groups.map(group => `
+                            <div class="group">
+                                <div class="group-title">${group.name} (${group.members.length}人)</div>
+                                ${group.members.map(member => `
+                                    <div class="member">${member.name} ${member.gender === 'male' ? '弟兄' : '姊妹'} ${member.type === 'leader' ? '(组长)' : ''}</div>
+                                `).join('')}
+                            </div>
+                        `).join('')}
+                        ${availableMembers.length > 0 ? `
+                            <div class="group">
+                                <div class="group-title">未分组 (${availableMembers.length}人)</div>
+                                ${availableMembers.map(member => `
+                                    <div class="member">${member.name} ${member.gender === 'male' ? '弟兄' : '姊妹'}</div>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                    </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.print();
         }
 
         // 初始化
