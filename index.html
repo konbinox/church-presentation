@@ -27,6 +27,27 @@
             padding: 20px 10px;
             overflow-y: auto;
             border-right: 2px solid #ffcc00;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+        
+        .nav-sidebar.collapsed {
+            width: 60px;
+        }
+        
+        .nav-toggle {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 204, 0, 0.8);
+            border: none;
+            color: #000;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+            z-index: 11;
         }
         
         .nav-thumbnail {
@@ -46,6 +67,12 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+        }
+        
+        .nav-sidebar.collapsed .nav-thumbnail {
+            width: 40px;
+            height: 40px;
+            font-size: 0.6rem;
         }
         
         .nav-thumbnail::before {
@@ -145,6 +172,13 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
         
         .large-text {
@@ -188,6 +222,9 @@
             border-radius: 10px;
             border: 1px solid #ffcc00;
             z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
         
         .control-btn {
@@ -195,15 +232,16 @@
             color: #000;
             border: none;
             padding: 10px 20px;
-            margin: 5px;
             border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
             font-size: 1.2rem;
+            transition: all 0.3s ease;
         }
         
         .control-btn:hover {
             background: rgba(255, 255, 255, 0.9);
+            transform: translateY(-2px);
         }
         
         /* 列表样式 */
@@ -245,6 +283,7 @@
             width: 80%;
             max-width: 600px;
             color: white;
+            box-shadow: 0 0 30px rgba(255, 204, 0, 0.5);
         }
         
         .config-panel h2 {
@@ -326,11 +365,115 @@
         audio {
             display: none;
         }
+        
+        /* 幻灯片计时器 */
+        .timer-display {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 15px;
+            border-radius: 10px;
+            border: 1px solid #ffcc00;
+            z-index: 100;
+            font-size: 1.2rem;
+            display: none;
+        }
+        
+        /* 进度条 */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            z-index: 101;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #ffcc00, #ff8800);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .nav-sidebar {
+                width: 80px;
+            }
+            
+            .nav-sidebar.collapsed {
+                width: 40px;
+            }
+            
+            .nav-thumbnail {
+                width: 60px;
+                height: 40px;
+                font-size: 0.6rem;
+            }
+            
+            .nav-sidebar.collapsed .nav-thumbnail {
+                width: 30px;
+                height: 30px;
+            }
+            
+            .explosive-text {
+                font-size: 3rem;
+            }
+            
+            .large-text {
+                font-size: 2.5rem;
+            }
+            
+            .medium-text {
+                font-size: 2rem;
+            }
+            
+            .normal-text {
+                font-size: 1.5rem;
+            }
+            
+            .scripture {
+                font-size: 1.8rem;
+            }
+            
+            .slide {
+                padding: 20px;
+            }
+            
+            .control-panel {
+                bottom: 10px;
+                right: 10px;
+                padding: 10px;
+            }
+            
+            .control-btn {
+                padding: 8px 15px;
+                font-size: 1rem;
+            }
+        }
+        
+        /* 触摸手势提示 */
+        .gesture-hint {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 15px;
+            border-radius: 10px;
+            border: 1px solid #ffcc00;
+            z-index: 100;
+            font-size: 1rem;
+            display: none;
+        }
     </style>
 </head>
 <body>
     <!-- 左侧导航 -->
     <div class="nav-sidebar" id="navSidebar">
+        <button class="nav-toggle" id="navToggle">◀</button>
         <!-- 导航缩略图将通过JavaScript动态生成 -->
     </div>
     
@@ -339,9 +482,30 @@
         <!-- 所有幻灯片将通过JavaScript动态生成 -->
     </div>
     
+    <!-- 进度条 -->
+    <div class="progress-bar">
+        <div class="progress" id="progress"></div>
+    </div>
+    
+    <!-- 计时器 -->
+    <div class="timer-display" id="timerDisplay">
+        当前幻灯片: <span id="currentSlideNum">1</span> / <span id="totalSlides">19</span>
+        <br>
+        时间: <span id="currentTime">00:00</span>
+    </div>
+    
+    <!-- 手势提示 -->
+    <div class="gesture-hint" id="gestureHint">
+        ← 左滑上一页 | 右滑下一页 →
+    </div>
+    
     <!-- 控制面板 -->
     <div class="control-panel">
+        <button class="control-btn" onclick="previousSlide()">上一页</button>
+        <button class="control-btn" onclick="nextSlide()">下一页</button>
+        <button class="control-btn" onclick="toggleTimer()">计时器</button>
         <button class="control-btn" onclick="toggleConfig()">设置</button>
+        <button class="control-btn" onclick="toggleFullscreen()">全屏</button>
     </div>
     
     <!-- 配置面板 -->
@@ -454,6 +618,10 @@
         let currentSlide = 0;
         let activeSlides = [];
         let welcomeAudio = null;
+        let timerInterval = null;
+        let slideStartTime = null;
+        let isTimerVisible = false;
+        let isNavCollapsed = false;
 
         // 音乐播放功能
         function playWelcomeSong() {
@@ -487,13 +655,86 @@
             generateNavigation();
             generateSlides();
             showSlide(0);
+            setupEventListeners();
             console.log("初始化完成");
+        }
+
+        // 设置事件监听器
+        function setupEventListeners() {
+            // 键盘控制
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    document.getElementById('configPanel').style.display = 'none';
+                } else if (e.key === 'ArrowLeft') {
+                    previousSlide();
+                } else if (e.key === 'ArrowRight') {
+                    nextSlide();
+                } else if (e.key === ' ') {
+                    // 空格键切换播放/暂停
+                    if (welcomeAudio && !welcomeAudio.paused) {
+                        welcomeAudio.pause();
+                        const btn = document.getElementById('welcomeSongBtn');
+                        if (btn) btn.innerHTML = '🎵 播放欢迎歌曲 🎵';
+                    }
+                }
+            });
+            
+            // 触摸手势
+            let touchStartX = 0;
+            let touchEndX = 0;
+            
+            document.addEventListener('touchstart', function(e) {
+                touchStartX = e.changedTouches[0].screenX;
+            });
+            
+            document.addEventListener('touchend', function(e) {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            });
+            
+            function handleSwipe() {
+                const swipeThreshold = 50;
+                const diff = touchStartX - touchEndX;
+                
+                if (Math.abs(diff) > swipeThreshold) {
+                    if (diff > 0) {
+                        // 左滑 - 下一页
+                        nextSlide();
+                    } else {
+                        // 右滑 - 上一页
+                        previousSlide();
+                    }
+                }
+            }
+            
+            // 导航栏切换
+            document.getElementById('navToggle').addEventListener('click', function() {
+                toggleNavigation();
+            });
+        }
+
+        // 切换导航栏
+        function toggleNavigation() {
+            const sidebar = document.getElementById('navSidebar');
+            const toggleBtn = document.getElementById('navToggle');
+            
+            isNavCollapsed = !isNavCollapsed;
+            sidebar.classList.toggle('collapsed', isNavCollapsed);
+            toggleBtn.innerHTML = isNavCollapsed ? '▶' : '◀';
         }
 
         // 生成导航
         function generateNavigation() {
             const sidebar = document.getElementById('navSidebar');
             sidebar.innerHTML = '';
+            
+            // 添加导航切换按钮
+            const toggleBtn = document.createElement('button');
+            toggleBtn.className = 'nav-toggle';
+            toggleBtn.id = 'navToggle';
+            toggleBtn.innerHTML = isNavCollapsed ? '▶' : '◀';
+            toggleBtn.addEventListener('click', toggleNavigation);
+            sidebar.appendChild(toggleBtn);
             
             console.log("生成导航，活动幻灯片数量:", activeSlides.length);
             
@@ -785,8 +1026,82 @@
                     slideElement.classList.add('active');
                     currentSlide = index;
                     console.log(`成功显示幻灯片: ${targetSlide.title}`);
+                    
+                    // 更新进度条
+                    updateProgressBar();
+                    
+                    // 更新计时器显示
+                    updateTimerDisplay();
+                    
+                    // 重置幻灯片开始时间
+                    slideStartTime = new Date();
                 } else {
                     console.log(`未找到幻灯片元素: slide-${targetSlide.id}`);
+                }
+            }
+        }
+
+        // 更新进度条
+        function updateProgressBar() {
+            const progress = document.getElementById('progress');
+            const percentage = ((currentSlide + 1) / activeSlides.length) * 100;
+            progress.style.width = `${percentage}%`;
+        }
+
+        // 更新计时器显示
+        function updateTimerDisplay() {
+            document.getElementById('currentSlideNum').textContent = currentSlide + 1;
+            document.getElementById('totalSlides').textContent = activeSlides.length;
+            
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('zh-CN', { 
+                hour: '2-digit', 
+                minute: '2-digit'
+            });
+            document.getElementById('currentTime').textContent = timeString;
+        }
+
+        // 上一页
+        function previousSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+            }
+        }
+
+        // 下一页
+        function nextSlide() {
+            if (currentSlide < activeSlides.length - 1) {
+                showSlide(currentSlide + 1);
+            }
+        }
+
+        // 切换计时器显示
+        function toggleTimer() {
+            const timerDisplay = document.getElementById('timerDisplay');
+            isTimerVisible = !isTimerVisible;
+            timerDisplay.style.display = isTimerVisible ? 'block' : 'none';
+            
+            if (isTimerVisible) {
+                if (!timerInterval) {
+                    timerInterval = setInterval(updateTimerDisplay, 1000);
+                }
+            } else {
+                if (timerInterval) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                }
+            }
+        }
+
+        // 切换全屏
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`全屏请求错误: ${err.message}`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
                 }
             }
         }
@@ -819,13 +1134,6 @@
             
             console.log("配置应用完成");
         }
-
-        // 键盘控制
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                document.getElementById('configPanel').style.display = 'none';
-            }
-        });
 
         // 初始化
         window.onload = function() {
