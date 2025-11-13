@@ -160,20 +160,28 @@
         
         /* 字体样式 */
         .explosive-text {
-            font-size: 5rem;
-            font-weight: 900;
-            text-align: center;
-            margin-bottom: 30px;
-            text-shadow: 
+              /* 最小值, 首选值, 最大值 */
+              font-size: clamp(2.8rem, 7vw + 1rem, 5.5rem);
+              /* 其余保持原样 ↓ */
+              font-weight: 900;
+              text-align: center;
+              margin-bottom: 30px;
+              text-shadow:
                 0 0 10px #ff0000,
                 0 0 20px #ff5500,
                 0 0 30px #ffaa00;
-            background: linear-gradient(45deg, #ff0000, #ff8800, #ffff00);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation: pulse 2s infinite;
-        }
+              background: linear-gradient(45deg, #ff0000, #ff8800, #ffff00);
+              -webkit-background-clip: text;
+              background-clip: text;
+              color: transparent;
+              animation: pulse 2s infinite;
+            }
+        /* 手机横屏时再缩小一点，避免把按钮挤下去 */
+            @media (max-height: 500px) and (orientation: landscape) {
+              .explosive-text {
+                font-size: clamp(2rem, 6vw, 3.5rem);
+              }
+            }
         
         @keyframes pulse {
             0% { transform: scale(1); }
