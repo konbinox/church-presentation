@@ -161,7 +161,14 @@
         /* 字体样式 */
         .explosive-text {
               /* 最小值, 首选值, 最大值 */
-              font-size: clamp(2.8rem, 7vw + 1rem, 5.5rem);
+              .explosive-text {
+                   font-size: clamp(2.8rem, 7vw + 1rem, 5.5rem);
+                  line-height: 1.1;          /* 挤一点，两行也不臃肿 */
+                  white-space: normal;       /* 允许断行 */
+                  max-width: 90vw;           /* 别把屏幕撑出横滚 */
+                  margin-left: auto;
+                  margin-right: auto;
+                
               /* 其余保持原样 ↓ */
               font-weight: 900;
               text-align: center;
